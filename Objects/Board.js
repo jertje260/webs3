@@ -54,11 +54,9 @@ function Board(game) {
                 }
             }
             data += ']}';
-            console.log(data);
-            var json = JSON.parse(JSON.stringify(data));
-            console.log(json);
+            var json = JSON.parse(data);
             $.ajax({
-                url: url + "/games/" + self._id + "/gameboards" + token,
+                url: url + "/games/" + self.game.id + "/gameboards" + token,
                 data: json,
                 method: "POST",
                 success: function (result) {
@@ -104,7 +102,7 @@ function Board(game) {
         if (y == null) {
             y = ship.y;
         }
-        if(x == null && y == null){
+        if (x == null && y == null) {
             return true;
         }
         if (flipping) {
@@ -148,6 +146,7 @@ function Board(game) {
 
     self.loadShips = function () {
         self.ships = [];
+        self.placedShips = [];
         $.ajax({
             url: url + "/ships" + token,
             success: function (result) {
@@ -223,6 +222,11 @@ function Board(game) {
 
     // fill unplaced ships in table
     self.fillShips = function () {
+        var field = $('.field');
+        field.each(function () {
+            $(this).removeClass('ship');
+            $(this).empty();
+        });
         var shiptable = document.querySelector('#ships tbody');
         $('#ships tbody').empty();
         for (i = self.ships.length - 1; i >= 0; i--) {
@@ -274,20 +278,61 @@ function Board(game) {
 
     //addEventListeners to all fields
     self.addListeners = function () {
-        var elements = document.querySelectorAll('.field');
-        for (i = 0; i < elements.length; i++) {
-            elements[i].className += " drop";
-            elements[i].addEventListener("click", function (event) {
-                var e = self.searchField(event.srcElement.id);
-                if (!e.clicked) {
-                    e.click();
-                    event.srcElement.className += " clicked";
-                    console.log("You shot at " + e.x + (e.y));
+        var fields = $('.field');
+        fields.each(function () {
+            var el = $(this);
+            //drop fields for drag and drop
+            if (!el.hasClass("drop")) {
+                if (self.game.status == "setup") {
+                    el.addClass("drop");
+                }
+            } else {
+                if (self.game.status != "setup") {
+                    el.removeClass("drop");
+                }
+            }
+
+            el.on('click', function (event) {
+                var e = self.searchField(event.toElement.id);
+                if (self.game.yourTurn == true && self.game.status == "started") {
+                    if (!e.clicked) {
+                        e.click();
+                        $('#' + event.toElement.id).addClass('clicked');
+                        alert("You shot at " + e.x + (e.y));
+                    } else {
+                        alert("You already shot at " + e.x + (e.y) + ". Try another field")
+                    }
                 } else {
-                    console.log("You already shot at " + e.x + (e.y) + ". Try another field")
+                    if (self.game.status != "started") {
+                        alert("The game hasn't started yet");
+                    } else {
+                        alert("It's not your turn!");
+                    }
                 }
             });
-        }
+
+        });
+
+        // var elements = document.querySelectorAll('.field');
+        // for (i = 0; i < elements.length; i++) {
+        //     if (elements[i].className.indexOf("drop") == -1) {
+        //         elements[i].className += " drop";
+        //     }
+        //     var clickclass = elements[i].className.indexOf("clicked");
+        //     if(clickclass > -1){ // has clicked class, needs to be removed.
+
+        //     }
+        //     elements[i].addEventListener("click", function (event) {
+        //         var e = self.searchField(event.srcElement.id);
+        //         if (!e.clicked) {
+        //             e.click();
+        //             event.srcElement.className += " clicked";
+        //             console.log("You shot at " + e.x + (e.y));
+        //         } else {
+        //             console.log("You already shot at " + e.x + (e.y) + ". Try another field")
+        //         }
+        //     });
+        //}
         var confirmbutton = $('#confirmShips').on('click', function () {
             self.sendShips();
         });
@@ -333,6 +378,10 @@ function Board(game) {
                 }
             }
         }
+    }
+    
+    self.loadObjects = function(myboard, enemyboard){
+        
     }
     self.load();
 }

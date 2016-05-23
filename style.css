@@ -1,6 +1,5 @@
 #field{
     border-collapse: collapse;
-    margin-left: 20px;
     position: relative;
     clear:both;
     display: inline;
@@ -29,9 +28,11 @@
     border: 1px solid black;
     border-collapse: collapse;
     margin-bottom: 20px;
+    float: left;
 
 }
 #ships td, #ships tr,#ships th{
+    width: auto;
     border: 1px solid black;
     text-align: center;
 }
@@ -124,12 +125,14 @@ nav div {
 }
 .left{
     float:left;
-    
 }
 
-div.right{
-       width: 250px;
+#board{
+    float: left;
+    width: 550px;
 }
-div.left{
-        width: 550px;
+#shipDisplay{
+    float: left;
+    width: 250px;
 }
+

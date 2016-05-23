@@ -2,6 +2,7 @@ function GameList() {
 	var self = this;
 	self.games = [];
 	self.loadingGames = false;
+	self.currentGame;
 	self.getGames = function () {
 		if (!self.loadingGames) {
 			self.loadingGames = true
@@ -10,6 +11,7 @@ function GameList() {
 				url: url + "/users/me/games" + token,
 				success: function (result) {
 					for (i = 0; i < result.length; i++) {
+						console.log(result[i]);
 						self.games.push(new Game(result[i]._id, result[i].status, result[i].enemyId, result[i].enemyName));
 					}
 					self.viewGames();
@@ -46,13 +48,15 @@ function GameList() {
 		for (i = 0; i < self.games.length; i++) {
 			$('#allGames tbody').append('<tr id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + self.games[i].enemyName + '</td></tr>');
 		}
-		$('#allGames tbody tr').on('click', function () {
-			var index = this.rowIndex;
-			console.log(self.games[index - 1]);
+		$('#allGames tbody tr').on('click', function (event) {
+			var id = event.currentTarget.id;
 			//load this game
-			if (self.games[index - 1] != undefined) {
-				self.games[index - 1].loadMoreInfo();
-				self.games[index - 1].load();
+			self.currentGame = self.findGame(id);
+			if (self.currentGame != null) {
+				console.log(self.currentGame.id);
+				self.currentGame.load();
+				self.currentGame.loadMoreInfo();
+
 			}
 
 		});

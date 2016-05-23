@@ -1,0 +1,256 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand"> Battleship </a>
+        </div>
+        <div id="navbar-collapse-1" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li id="home" class="active"> <a>Home</a> </li>
+                <li id="profile"> <a>Profile</a> </li>
+                <li id="mygames"> <a>My Games</a> </li>
+                <li id="todo"> <a>TODO</a> </li>
+
+            </ul>
+        </div>
+    </nav>
+    <div id="homepage">
+        <h1> Battleship</h1>
+        <p> This website allows you to play the game Battleship.</p>
+    </div>
+    <div id="gamepage" style="display:none;">
+        <div class="left">
+            <table id="field">
+                <tr>
+                    <th></th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>F</th>
+                    <th>G</th>
+                    <th>H</th>
+                    <th>I</th>
+                    <th>J</th>
+                </tr>
+                <tr>
+                    <th>1</th>
+                    <td id="A1" class="field"></td>
+                    <td id="B1" class="field"></td>
+                    <td id="C1" class="field"></td>
+                    <td id="D1" class="field"></td>
+                    <td id="E1" class="field"></td>
+                    <td id="F1" class="field"></td>
+                    <td id="G1" class="field"></td>
+                    <td id="H1" class="field"></td>
+                    <td id="I1" class="field"></td>
+                    <td id="J1" class="field"></td>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <td id="A2" class="field"></td>
+                    <td id="B2" class="field"></td>
+                    <td id="C2" class="field"></td>
+                    <td id="D2" class="field"></td>
+                    <td id="E2" class="field"></td>
+                    <td id="F2" class="field"></td>
+                    <td id="G2" class="field"></td>
+                    <td id="H2" class="field"></td>
+                    <td id="I2" class="field"></td>
+                    <td id="J2" class="field"></td>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <td id="A3" class="field"></td>
+                    <td id="B3" class="field"></td>
+                    <td id="C3" class="field"></td>
+                    <td id="D3" class="field"></td>
+                    <td id="E3" class="field"></td>
+                    <td id="F3" class="field"></td>
+                    <td id="G3" class="field"></td>
+                    <td id="H3" class="field"></td>
+                    <td id="I3" class="field"></td>
+                    <td id="J3" class="field"></td>
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <td id="A4" class="field"></td>
+                    <td id="B4" class="field"></td>
+                    <td id="C4" class="field"></td>
+                    <td id="D4" class="field"></td>
+                    <td id="E4" class="field"></td>
+                    <td id="F4" class="field"></td>
+                    <td id="G4" class="field"></td>
+                    <td id="H4" class="field"></td>
+                    <td id="I4" class="field"></td>
+                    <td id="J4" class="field"></td>
+                </tr>
+                <tr>
+                    <th>5</th>
+                    <td id="A5" class="field"></td>
+                    <td id="B5" class="field"></td>
+                    <td id="C5" class="field"></td>
+                    <td id="D5" class="field"></td>
+                    <td id="E5" class="field"></td>
+                    <td id="F5" class="field"></td>
+                    <td id="G5" class="field"></td>
+                    <td id="H5" class="field"></td>
+                    <td id="I5" class="field"></td>
+                    <td id="J5" class="field"></td>
+                </tr>
+                <tr>
+                    <th>6</th>
+                    <td id="A6" class="field"></td>
+                    <td id="B6" class="field"></td>
+                    <td id="C6" class="field"></td>
+                    <td id="D6" class="field"></td>
+                    <td id="E6" class="field"></td>
+                    <td id="F6" class="field"></td>
+                    <td id="G6" class="field"></td>
+                    <td id="H6" class="field"></td>
+                    <td id="I6" class="field"></td>
+                    <td id="J6" class="field"></td>
+                </tr>
+                <tr>
+                    <th>7</th>
+                    <td id="A7" class="field"></td>
+                    <td id="B7" class="field"></td>
+                    <td id="C7" class="field"></td>
+                    <td id="D7" class="field"></td>
+                    <td id="E7" class="field"></td>
+                    <td id="F7" class="field"></td>
+                    <td id="G7" class="field"></td>
+                    <td id="H7" class="field"></td>
+                    <td id="I7" class="field"></td>
+                    <td id="J7" class="field"></td>
+                </tr>
+                <tr>
+                    <th>8</th>
+                    <td id="A8" class="field"></td>
+                    <td id="B8" class="field"></td>
+                    <td id="C8" class="field"></td>
+                    <td id="D8" class="field"></td>
+                    <td id="E8" class="field"></td>
+                    <td id="F8" class="field"></td>
+                    <td id="G8" class="field"></td>
+                    <td id="H8" class="field"></td>
+                    <td id="I8" class="field"></td>
+                    <td id="J8" class="field"></td>
+                </tr>
+                <tr>
+                    <th>9</th>
+                    <td id="A9" class="field"></td>
+                    <td id="B9" class="field"></td>
+                    <td id="C9" class="field"></td>
+                    <td id="D9" class="field"></td>
+                    <td id="E9" class="field"></td>
+                    <td id="F9" class="field"></td>
+                    <td id="G9" class="field"></td>
+                    <td id="H9" class="field"></td>
+                    <td id="I9" class="field"></td>
+                    <td id="J9" class="field"></td>
+                </tr>
+                <tr>
+                    <th>10</th>
+                    <td id="A10" class="field"></td>
+                    <td id="B10" class="field"></td>
+                    <td id="C10" class="field"></td>
+                    <td id="D10" class="field"></td>
+                    <td id="E10" class="field"></td>
+                    <td id="F10" class="field"></td>
+                    <td id="G10" class="field"></td>
+                    <td id="H10" class="field"></td>
+                    <td id="I10" class="field"></td>
+                    <td id="J10" class="field"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="right">
+            <table id="ships">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Length</th>
+                        <th>Orientation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <button typ="button" id="confirmShips" class="btn btn-success">Place Ships</button>
+        </div>
+    </div>
+    <div id="mygamespage" style="display:none;">
+        <h1>Here are all your games</h1>
+        <a class="btn btn-success right" id="newAIGame">New AI Game</a>
+        <a class="btn btn-success right" id="newGame">New Game</a>
+        <a class="btn btn-danger right" id="deleteGames">Delete all games</a>
+        <table class="table table-hover" id="allGames">
+            <thead>
+                <tr>
+                    <th>Game ID</th>
+                    <th>Status</th>
+                    <th>Enemy name</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div id="profilepage" style="display:none;">
+        <h1>This is your profile</h1>
+        <table class="table">
+            <tr>
+                <td>Your id:</td>
+                <td id="profileid"></td>
+            </tr>
+            <tr>
+                <td>Your name:</td>
+                <td id="profilename"></td>
+            </tr>
+        </table>
+    </div>
+    <div id="todopage" style="display:none;">
+        <h1>TODO</h1>
+        <ul>
+            <li>load game</li>
+            <li>start game</li>
+            <li>complete setup</li>
+            <li>run through game, but use sockets for this</li>
+            <li>show end of game</li>
+            <li>add updates from the socket</li>
+            <li>visualize your shot boats</li>
+            <li>visualize your own shots nicely</li>
+
+        </ul>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="config.js"></script>
+    <script type="text/javascript" src="Objects/Field.js"></script>
+    <script type="text/javascript" src="Objects/Board.js"></script>
+    <script type="text/javascript" src="Objects/Ship.js"></script>
+    <script type="text/javascript" src="Objects/Profile.js"></script>
+    <script type="text/javascript" src="Objects/GameList.js"></script>
+    <script type="text/javascript" src="Objects/Game.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+
+</html>

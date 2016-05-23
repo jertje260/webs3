@@ -1,0 +1,135 @@
+#field{
+    border-collapse: collapse;
+    margin-left: 20px;
+    position: relative;
+    clear:both;
+    display: inline;
+}
+
+#field th {
+    border: 1px solid black;
+}
+
+.field{
+    height: 50px;
+    width: 50px;
+    border: 1px solid black;
+    background-color: deepskyblue;
+
+}
+.clicked {
+    background-color: yellow;
+    z-index: 0;
+}
+.hit{
+    background-color: red;
+}
+
+#ships{
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+
+}
+#ships td, #ships tr,#ships th{
+    border: 1px solid black;
+    text-align: center;
+}
+
+.ship {
+    margin:0px auto;
+    background-color: orange;
+    position:relative;
+    z-index: 10;
+   
+}
+.ship:after{
+    background-color: deepskyblue;
+    position: absolute;
+    content: '';
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:5px;
+    z-index: -1;
+    display: block;
+
+}
+
+h1,h2,h3,h4,h5{
+    position: relative;
+    clear:both;
+    display: inline;
+}
+p{
+    clear:both;
+}
+.hidden{
+    display:none;
+}
+.placed{
+    word-wrap: break-word; 
+    width:50px;
+}
+li a{
+    cursor: pointer
+}
+div {
+    margin: auto;
+    width:90%;
+    align-content: center;
+}
+nav div {
+    margin-left: 0px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;   
+    width: auto;
+}
+.navbar-brand{
+    cursor: pointer;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;   
+    width: auto;
+}
+.right{
+    float: right;
+    margin-left: 15px;
+    overflow: hidden;
+}
+
+#allGames tbody tr{
+     margin-left: 0px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;   
+    cursor: pointer;
+}
+#allGames{
+        margin-top: 30px;
+}
+
+#gamepage {
+    overflow: hidden;
+}
+.left{
+    float:left;
+    
+}
+
+div.right{
+       width: 250px;
+}
+div.left{
+        width: 550px;
+}

@@ -7,6 +7,7 @@ function Ship(id, name, length, orientation){
     self.x = null;
     self.y = null;
     self.id =id;
+    self.hits = [];
     
     self.flip = function(){
         self.isHorizontal = !self.isHorizontal;

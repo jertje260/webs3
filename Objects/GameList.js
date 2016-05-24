@@ -38,8 +38,17 @@ function GameList() {
 				}
 			});
 		}
-	};
-	self.getGames();
+	}
+
+	self.deleteGames = function(){
+		$.ajax({
+			url: url + "/users/me/games" + token,
+			method: "DELETE",
+			success: function(result){
+				self.getGames();
+			}
+		});
+	}
 
 
 	self.viewGames = function () {
@@ -54,7 +63,6 @@ function GameList() {
 			self.currentGame = self.findGame(id);
 			if (self.currentGame != null) {
 				console.log(self.currentGame.id);
-				self.currentGame.load();
 				self.currentGame.loadMoreInfo();
 
 			}
@@ -71,11 +79,16 @@ function GameList() {
 		}
 		return null;
 	}
-
+	
+	//code to execute on load
+	self.getGames();
 	$('#newGame').on('click', function () {
 		self.newGame(false);
 	});
 	$('#newAIGame').on('click', function () {
 		self.newGame(true);
+	});
+	$('#deleteGames').on('click', function(){
+		self.deleteGames();
 	});
 }

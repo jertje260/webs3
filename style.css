@@ -20,9 +20,6 @@
     background-color: yellow;
     z-index: 0;
 }
-.hit{
-    background-color: red;
-}
 
 #ships{
     border: 1px solid black;
@@ -56,6 +53,26 @@
     display: block;
 
 }
+.ship.clicked:after{
+    background-color: yellow;
+    position: absolute;
+    content: '';
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:5px;
+    z-index: -1;
+    display: block;
+
+}
+.ship.hit {
+    margin:0px auto;
+    background-color: red;
+    position:relative;
+    z-index: 10;
+   
+}
+
 
 h1,h2,h3,h4,h5{
     position: relative;

@@ -3,6 +3,8 @@ function Board(game) {
     self.fields = new Array(10);
     self.placedShips = [];
     self.ships = [];
+    self.shots = [];
+    self.enemyshots = [];
     self.letters = "ABCDEFGHIJ".split("");
     self.game = game;
     self.dropConfirmed = false;
@@ -21,7 +23,7 @@ function Board(game) {
         if (si.length > 2) {
             si[1] += si[2];
         }
-        return self.fields[si[0]][si[1]];
+        return self.fields[si[0]][si[1]-1];
     }
 
     self.addShip = function (ship, x, y) {
@@ -54,6 +56,7 @@ function Board(game) {
                 }
             }
             data += ']}';
+            //console.log(data);
             var json = JSON.parse(data);
             $.ajax({
                 url: url + "/games/" + self.game.id + "/gameboards" + token,
@@ -125,7 +128,7 @@ function Board(game) {
                 i = 1;
             }
             for (i; i < ship.length; i++) {
-                if ((parseInt(y) + i) > 9 || self.fields[x][parseInt(y) + i - 1].hasShip) {
+                if ((parseInt(y) + i) > 10 || self.fields[x][parseInt(y) + i - 1].hasShip) {
                     return false;
                 }
             }
@@ -342,6 +345,7 @@ function Board(game) {
     self.drawOutline = function (shipnumber) {
 
         var ship = self.ships[shipnumber];
+        console.log(ship);
         if (ship.x != null && ship.y != null) {
             if (!ship.isHorizontal) { //vertical
                 for (j = 0; j < ship.length; j++) {
@@ -381,6 +385,36 @@ function Board(game) {
     }
     
     self.loadObjects = function(myboard, enemyboard){
+        console.log(myboard);
+        console.log(enemyboard);
+        if(self.game.status != "setup"){
+            $('#shipDisplay').hide();
+        }
+        
+        if(myboard != undefined){
+            if(myboard.ships.length > 0){
+                self.ships = [];
+                self.placedShips = [];
+            }
+            for(i = 0; i < myboard.ships.length; i++){
+                var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
+                s.x = myboard.ships[i].startCell.x.toUpperCase();
+                s.y = myboard.ships[i].startCell.y;
+                console.log(s);
+                self.ships.push(s)
+                self.placedShips.push(s);
+                
+            }
+            console.log(self.ships);
+            console.log(self.placedShips);
+            for(i = 0; i < self.placedShips.length; i++){
+                self.drawOutline(i);
+            }
+            
+        }
+    }
+    
+    self.shootAt = function(location){
         
     }
     self.load();

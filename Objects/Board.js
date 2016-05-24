@@ -63,7 +63,7 @@ function Board(game) {
                 data: json,
                 method: "POST",
                 success: function (result) {
-                    console.log(result);
+                    //console.log(result);
                     // for (i = 0; i < result.length; i++) {
                     //     self.ships.push(new Ship(result[i]._id,result[i].name, result[i].length, true))
 
@@ -77,7 +77,7 @@ function Board(game) {
     }
 
     self.ChangeFields = function (ship, gotShip, flipping) {
-        console.log(gotShip);
+        //console.log(gotShip);
         var index = self.letters.indexOf(ship.x);
         if (ship.isHorizontal) {
             for (i = 0; i < ship.length; i++) {
@@ -179,7 +179,7 @@ function Board(game) {
                 if (id.length > 2) {
                     id[1] += id[2];
                 }
-                console.log(shipnumber);
+                //console.log(shipnumber);
                 // test if ship can fit here
                 if (self.doesShipFit(shipnumber, id[0], id[1])) {
 
@@ -191,7 +191,7 @@ function Board(game) {
 
                     self.addShip(self.ships[shipnumber], id[0], id[1]);
 
-                    console.log('Placing ship in ' + id[0] + (id[1]));
+                    //console.log('Placing ship in ' + id[0] + (id[1]));
 
                     // setting outline for ship
                     self.drawOutline(shipnumber);
@@ -209,7 +209,7 @@ function Board(game) {
         for (i = 0; i < drag.length; i++) {
             drag[i].addEventListener('dragstart', function (event) {
                 self.dropConfirmed = false;
-                console.log(event.target);
+                //console.log(event.target);
                 event.dataTransfer.setData("dragged-id", event.target.id);
                 $(event.target.id).removeClass("placed");
                 self.removeOutline(event.target.id.substring(1));
@@ -389,8 +389,8 @@ function Board(game) {
 
     self.loadObjects = function (myboard, enemyboard) {
 
-        console.log(myboard);
-        console.log(enemyboard);
+        //console.log(myboard); // contains shots from enemy at me
+        //console.log(enemyboard); // contains my shots
         if (self.game.status != "setup") {
             $('#shipDisplay').hide();
         }
@@ -404,10 +404,17 @@ function Board(game) {
                 var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
                 s.x = myboard.ships[i].startCell.x.toUpperCase();
                 s.y = myboard.ships[i].startCell.y;
+                s.hits = myboard.ships[i].hits;
                 self.ships.push(s)
                 self.placedShips.push(s);
 
             }
+            //console.log(self.ships);
+            self.shots = enemyboard.shots;
+            self.enemyshots = myboard.shots;
+            //console.log(self.shots);
+            //console.log(self.enemyshots);
+            self.visualizeAllShots();
             for (i = 0; i < self.placedShips.length; i++) {
                 self.drawOutline(i);
                 self.drawShipName(i);
@@ -416,30 +423,55 @@ function Board(game) {
         }
     }
 
+    self.visualizeShot = function (shot, enemy) {
+        var field = $('#' + shot.x.toUpperCase() + shot.y);
+        if (!enemy) {
+            field.addClass('clicked');
+            if (shot.isHit) {
+                field.addClass('boom');
+            }
+        } else {
+            field.addClass('Eshot');
+            if (shot.isHit) {
+                field.addClass('hit');
+            }
+        }
+    }
+
+    self.visualizeAllShots = function () {
+        for (i = 0; i < self.shots.length; i++){
+            self.visualizeShot(self.shots[i], false);
+        }
+        for (i = 0; i < self.enemyshots.length; i++){
+            self.visualizeShot(self.enemyshots[i],  true);
+        }
+    }
+
     self.shootAt = function (elementid) {
         var e = self.searchField(elementid);
         if (!e.clicked) {
-            var data = '{"x": "' + e.x.toLowerCase() + '", "y": ' + e.y +'}'
+            var data = '{"x": "' + e.x.toLowerCase() + '", "y": ' + e.y + '}'
             var json = JSON.parse(data);
-            console.log(json);
+            //console.log(json);
             $.ajax({
                 url: url + "/games/" + self.game.id + "/shots" + token,
                 data: json,
                 method: "POST",
                 success: function (result) {
-                    console.log(result);
                     if (result == "BOOM" || result == "SPLASH") {
                         e.click();
-                        $('#' + elementid).addClass('clicked');
                         if (result == "BOOM") {
-                            $('#' + elementid).addClass('boom');
+                            json["isHit"] = true;
                         }
+                        self.shots.push(json);
+                        self.visualizeShot(json);
                         alert("You shot at " + e.x + (e.y));
-                    } else if (result == "FAIL"){
-                         alert("You already shot at " + e.x + (e.y) + ". Try another field");
-                    } else if(result == "WINNER"){
+                    } else if (result == "FAIL") {
+                        alert("You already shot at " + e.x + (e.y) + ". Try another field");
+                    } else if (result == "WINNER") {
                         alert("You won the game!");
                     }
+                    
                 }
 
             });
@@ -448,5 +480,10 @@ function Board(game) {
             alert("You already shot at " + e.x + (e.y) + ". Try another field");
         }
     }
+
+    self.createPopup = function (title, message, buttons) {
+        //TODO do this later
+    }
+    
     self.load();
 }

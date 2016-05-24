@@ -1,5 +1,7 @@
 var profile = null;
 var gamelist = null;
+//var sock = new MySocket(); //check this later.
+//console.log(sock);
 
 
 
@@ -43,6 +45,15 @@ $('.navbar-brand').on('click', function () {
     hideAndShow("#" + element.attr('id') + "page", '#homepage');
 });
 
+$body = $('body');
+$(document).on({
+    ajaxStart: function () {
+        $body.addClass("loading");
+    },
+    ajaxStop: function () {
+        $body.removeClass("loading");
+    }
+});
 
 var hideAndShow = function (idToHide, idToShow) {
 

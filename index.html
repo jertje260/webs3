@@ -181,6 +181,37 @@
                 </tr>
             </table>
         </div>
+        <div id="legend">
+            <table id="legendTable">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Visualisation</th>
+                    </tr>
+                    <tr>
+                        <td>Your splash</td>
+                        <td class="clicked">
+                    </tr>
+                    <tr>
+                        <td>Enemy splash</td>
+                        <td class="Eshot"></td>
+                    </tr>
+                    <tr>
+                        <td>Your ship</td>
+                        <td class="ship"></td>
+                    </tr>
+                    <tr>
+                        <td>Your boom</td>
+                        <td class="clicked boom"></td>
+                    </tr>
+                    <tr>
+                        <td>Ship hit</td>
+                        <td class="ship Eshot hit"></td>
+                    </tr>
+
+
+            </table>
+        </div>
         <div id="shipDisplay">
             <table id="ships">
                 <thead>
@@ -230,19 +261,16 @@
     <div id="todopage" style="display:none;">
         <h1>TODO</h1>
         <ul>
-            <li>load game</li>
-            <li>start game</li>
-            <li>complete setup</li>
             <li>run through game, but use sockets for this</li>
             <li>show end of game</li>
             <li>add updates from the socket</li>
-            <li>visualize your shot boats</li>
-            <li>visualize your own shots nicely</li>
-
+            <li>beautify the alerts</li>
         </ul>
     </div>
+    <div class="modal"></div>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
+    <script src="https://zeeslagavans.herokuapp.com/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="config.js"></script>
     <script type="text/javascript" src="Objects/Field.js"></script>
     <script type="text/javascript" src="Objects/Board.js"></script>
@@ -250,6 +278,7 @@
     <script type="text/javascript" src="Objects/Profile.js"></script>
     <script type="text/javascript" src="Objects/GameList.js"></script>
     <script type="text/javascript" src="Objects/Game.js"></script>
+    <script type="text/javascript" src="Objects/MySocket.js"></script>
     <script type="text/javascript" src="app.js"></script>
 </body>
 

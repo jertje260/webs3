@@ -8,12 +8,15 @@ function Game(id, status, eID, eName) {
 	self.youWon;
 	self.board;
 
-	self.loadMoreInfo = function () {
-		console.log(self.id);
+	self.loadMoreInfo = function (id) {
+		self.id = id;
 		$.ajax({
 			url: url + "/games/" + self.id + token,
 			success: function (result) {
 				console.log(result);
+				self.status = result.status;
+				self.enemyID = result.enemyId;
+				self.enemyName = result.enemyName;
 				self.load();
 				self.board.loadObjects(result.myGameboard, result.enemyGameboard);
 				if (result.status == "started") {

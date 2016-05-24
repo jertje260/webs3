@@ -1,4 +1,18 @@
 function GameList() {
+
+
+	//events
+	$('#allGames').on('click', 'tr', function (event) {
+		var id = event.currentTarget.id;
+		//load this game
+		self.currentGame = self.findGame(id);
+		if (self.currentGame != null) {
+			self.currentGame.loadMoreInfo(self.currentGame.id);
+
+		}
+
+	});
+
 	var self = this;
 	self.games = [];
 	self.loadingGames = false;
@@ -11,7 +25,6 @@ function GameList() {
 				url: url + "/users/me/games" + token,
 				success: function (result) {
 					for (i = 0; i < result.length; i++) {
-						console.log(result[i]);
 						self.games.push(new Game(result[i]._id, result[i].status, result[i].enemyId, result[i].enemyName));
 					}
 					self.viewGames();
@@ -40,11 +53,11 @@ function GameList() {
 		}
 	}
 
-	self.deleteGames = function(){
+	self.deleteGames = function () {
 		$.ajax({
 			url: url + "/users/me/games" + token,
 			method: "DELETE",
-			success: function(result){
+			success: function (result) {
 				self.getGames();
 			}
 		});
@@ -57,18 +70,6 @@ function GameList() {
 		for (i = 0; i < self.games.length; i++) {
 			$('#allGames tbody').append('<tr id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + self.games[i].enemyName + '</td></tr>');
 		}
-		$('#allGames tbody tr').on('click', function (event) {
-			var id = event.currentTarget.id;
-			//load this game
-			self.currentGame = self.findGame(id);
-			if (self.currentGame != null) {
-				console.log(self.currentGame.id);
-				self.currentGame.loadMoreInfo();
-
-			}
-
-		});
-
 	}
 
 	self.findGame = function (id) {
@@ -79,7 +80,7 @@ function GameList() {
 		}
 		return null;
 	}
-	
+
 	//code to execute on load
 	self.getGames();
 	$('#newGame').on('click', function () {
@@ -88,7 +89,7 @@ function GameList() {
 	$('#newAIGame').on('click', function () {
 		self.newGame(true);
 	});
-	$('#deleteGames').on('click', function(){
+	$('#deleteGames').on('click', function () {
 		self.deleteGames();
 	});
 }

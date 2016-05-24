@@ -23,7 +23,7 @@ function Board(game) {
         if (si.length > 2) {
             si[1] += si[2];
         }
-        return self.fields[si[0]][si[1]-1];
+        return self.fields[si[0]][si[1] - 1];
     }
 
     self.addShip = function (ship, x, y) {
@@ -284,6 +284,7 @@ function Board(game) {
         var fields = $('.field');
         fields.each(function () {
             var el = $(this);
+            el.text("");
             //drop fields for drag and drop
             if (!el.hasClass("drop")) {
                 if (self.game.status == "setup") {
@@ -296,15 +297,8 @@ function Board(game) {
             }
 
             el.on('click', function (event) {
-                var e = self.searchField(event.toElement.id);
                 if (self.game.yourTurn == true && self.game.status == "started") {
-                    if (!e.clicked) {
-                        e.click();
-                        $('#' + event.toElement.id).addClass('clicked');
-                        alert("You shot at " + e.x + (e.y));
-                    } else {
-                        alert("You already shot at " + e.x + (e.y) + ". Try another field")
-                    }
+                    self.shootAt(event.toElement.id);
                 } else {
                     if (self.game.status != "started") {
                         alert("The game hasn't started yet");
@@ -345,7 +339,6 @@ function Board(game) {
     self.drawOutline = function (shipnumber) {
 
         var ship = self.ships[shipnumber];
-        console.log(ship);
         if (ship.x != null && ship.y != null) {
             if (!ship.isHorizontal) { //vertical
                 for (j = 0; j < ship.length; j++) {
@@ -383,39 +376,77 @@ function Board(game) {
             }
         }
     }
-    
-    self.loadObjects = function(myboard, enemyboard){
+
+    self.drawShipName = function (shipnumber) {
+        var shipx = self.ships[shipnumber].x;
+        var shipy = self.ships[shipnumber].y;
+        var shipname = self.ships[shipnumber].name;
+
+        $('#' + shipx + shipy).text(shipname);
+
+    }
+
+
+    self.loadObjects = function (myboard, enemyboard) {
+
         console.log(myboard);
         console.log(enemyboard);
-        if(self.game.status != "setup"){
+        if (self.game.status != "setup") {
             $('#shipDisplay').hide();
         }
-        
-        if(myboard != undefined){
-            if(myboard.ships.length > 0){
+
+        if (myboard != undefined) {
+            if (myboard.ships.length > 0) {
                 self.ships = [];
                 self.placedShips = [];
             }
-            for(i = 0; i < myboard.ships.length; i++){
+            for (i = 0; i < myboard.ships.length; i++) {
                 var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
                 s.x = myboard.ships[i].startCell.x.toUpperCase();
                 s.y = myboard.ships[i].startCell.y;
-                console.log(s);
                 self.ships.push(s)
                 self.placedShips.push(s);
-                
+
             }
-            console.log(self.ships);
-            console.log(self.placedShips);
-            for(i = 0; i < self.placedShips.length; i++){
+            for (i = 0; i < self.placedShips.length; i++) {
                 self.drawOutline(i);
+                self.drawShipName(i);
             }
-            
+
         }
     }
-    
-    self.shootAt = function(location){
-        
+
+    self.shootAt = function (elementid) {
+        var e = self.searchField(elementid);
+        if (!e.clicked) {
+            var data = '{"x": "' + e.x.toLowerCase() + '", "y": ' + e.y +'}'
+            var json = JSON.parse(data);
+            console.log(json);
+            $.ajax({
+                url: url + "/games/" + self.game.id + "/shots" + token,
+                data: json,
+                method: "POST",
+                success: function (result) {
+                    console.log(result);
+                    if (result == "BOOM" || result == "SPLASH") {
+                        e.click();
+                        $('#' + elementid).addClass('clicked');
+                        if (result == "BOOM") {
+                            $('#' + elementid).addClass('boom');
+                        }
+                        alert("You shot at " + e.x + (e.y));
+                    } else if (result == "FAIL"){
+                         alert("You already shot at " + e.x + (e.y) + ". Try another field");
+                    } else if(result == "WINNER"){
+                        alert("You won the game!");
+                    }
+                }
+
+            });
+
+        } else {
+            alert("You already shot at " + e.x + (e.y) + ". Try another field");
+        }
     }
     self.load();
 }

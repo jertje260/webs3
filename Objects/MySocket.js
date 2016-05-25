@@ -1,6 +1,8 @@
 function MySocket() {
     var self = this;
-    self.socket = io.connect(url, token);
+    self.socket = io();
+    self.socket.connect(url, token);
+    console.log(self.socket);
 
     self.socket.on('update', function (update) {
         console.log(update);

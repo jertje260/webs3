@@ -37,7 +37,7 @@
     height:     100%;
     width:      100%;
     background: rgba( 255, 255, 255, .8 ) 
-                url('http://i.stack.imgur.com/FhHRx.gif') 
+                url('./Resources/ring.gif') 
                 50% 50% 
                 no-repeat;
 }
@@ -114,6 +114,20 @@ body.loading .modal {
     z-index: -1;
     display: block;
 }
+
+.Eshot.clicked:not(.hit):after{
+    background-color: yellow;
+    position: absolute;
+    content: '';
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:5px;
+    z-index: -1;
+    display: block;
+}
+
+
 .ship.clicked:after{
     background-color: yellow;
     position: absolute;
@@ -215,6 +229,9 @@ nav div {
 }
 .left{
     float:left;
+}
+.center{
+    margin: 0 auto;
 }
 
 #board{

@@ -18,6 +18,9 @@ function Board(game) {
         }
     }
 
+    
+
+
     self.searchField = function (input) {
         var si = input.split('');
         if (si.length > 2) {
@@ -63,6 +66,7 @@ function Board(game) {
                 data: json,
                 method: "POST",
                 success: function (result) {
+                    self.game.loadMoreInfo(self.game.id);
                     //console.log(result);
                     // for (i = 0; i < result.length; i++) {
                     //     self.ships.push(new Ship(result[i]._id,result[i].name, result[i].length, true))
@@ -138,6 +142,9 @@ function Board(game) {
 
     // loading all fields of the board
     self.loadField = function () {
+        $('#field').remove();
+        $('#board').append('<table id="field"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>J</th></tr><tr><th>1</th><td id="A1" class="field"></td><td id="B1" class="field"></td><td id="C1" class="field"></td><td id="D1" class="field"></td><td id="E1" class="field"></td><td id="F1" class="field"></td><td id="G1" class="field"></td><td id="H1" class="field"></td><td id="I1" class="field"></td><td id="J1" class="field"></td></tr><tr><th>2</th><td id="A2" class="field"></td><td id="B2" class="field"></td><td id="C2" class="field"></td><td id="D2" class="field"></td><td id="E2" class="field"></td><td id="F2" class="field"></td><td id="G2" class="field"></td><td id="H2" class="field"></td><td id="I2" class="field"></td><td id="J2" class="field"></td></tr><tr><th>3</th><td id="A3" class="field"></td><td id="B3" class="field"></td><td id="C3" class="field"></td><td id="D3" class="field"></td><td id="E3" class="field"></td><td id="F3" class="field"></td><td id="G3" class="field"></td><td id="H3" class="field"></td><td id="I3" class="field"></td><td id="J3" class="field"></td></tr><tr><th>4</th><td id="A4" class="field"></td><td id="B4" class="field"></td><td id="C4" class="field"></td><td id="D4" class="field"></td><td id="E4" class="field"></td><td id="F4" class="field"></td><td id="G4" class="field"></td><td id="H4" class="field"></td><td id="I4" class="field"></td><td id="J4" class="field"></td></tr><tr><th>5</th><td id="A5" class="field"></td><td id="B5" class="field"></td><td id="C5" class="field"></td><td id="D5" class="field"></td><td id="E5" class="field"></td><td id="F5" class="field"></td><td id="G5" class="field"></td><td id="H5" class="field"></td><td id="I5" class="field"></td><td id="J5" class="field"></td></tr><tr><th>6</th><td id="A6" class="field"></td><td id="B6" class="field"></td><td id="C6" class="field"></td><td id="D6" class="field"></td><td id="E6" class="field"></td><td id="F6" class="field"></td><td id="G6" class="field"></td><td id="H6" class="field"></td><td id="I6" class="field"></td><td id="J6" class="field"></td></tr><tr><th>7</th><td id="A7" class="field"></td><td id="B7" class="field"></td><td id="C7" class="field"></td><td id="D7" class="field"></td><td id="E7" class="field"></td><td id="F7" class="field"></td><td id="G7" class="field"></td><td id="H7" class="field"></td><td id="I7" class="field"></td><td id="J7" class="field"></td></tr><tr><th>8</th><td id="A8" class="field"></td><td id="B8" class="field"></td><td id="C8" class="field"></td><td id="D8" class="field"></td><td id="E8" class="field"></td><td id="F8" class="field"></td><td id="G8" class="field"></td><td id="H8" class="field"></td><td id="I8" class="field"></td><td id="J8" class="field"></td></tr><tr><th>9</th><td id="A9" class="field"></td><td id="B9" class="field"></td><td id="C9" class="field"></td><td id="D9" class="field"></td><td id="E9" class="field"></td><td id="F9" class="field"></td><td id="G9" class="field"></td><td id="H9" class="field"></td><td id="I9" class="field"></td><td id="J9" class="field"></td></tr><tr><th>10</th><td id="A10" class="field"></td><td id="B10" class="field"></td><td id="C10" class="field"></td><td id="D10" class="field"></td><td id="E10" class="field"></td><td id="F10" class="field"></td><td id="G10" class="field"></td><td id="H10" class="field"></td><td id="I10" class="field"></td><td id="J10" class="field"></td></tr></table>');
+
         for (j = 0; j < 10; j++) {
             self.fields[self.letters[j]] = new Array(10);
 
@@ -295,19 +302,32 @@ function Board(game) {
                     el.removeClass("drop");
                 }
             }
+            
+            
 
-            el.on('click', function (event) {
-                if (self.game.yourTurn == true && self.game.status == "started") {
-                    self.shootAt(event.toElement.id);
-                } else {
-                    if (self.game.status != "started") {
-                        alert("The game hasn't started yet");
+
+        });
+        $('.field').on('click', function (event) {
+            console.log(self.game);
+            if (self.game.yourTurn == true && self.game.status == "started") {
+                self.shootAt(event.toElement.id);
+            } else {
+                if (self.game.status != "started") {
+                    if (self.game.isDone) {
+                        var text;
+                        if (self.game.youWon) {
+                            text = "You are the Winner!!";
+                        } else {
+                            text = "You lost, you fool!";
+                        }
+                        alert("The game is finished. " + text);
                     } else {
-                        alert("It's not your turn!");
+                        alert("The game hasn't started yet");
                     }
+                } else {
+                    alert("It's not your turn!");
                 }
-            });
-
+            }
         });
 
         // var elements = document.querySelectorAll('.field');
@@ -393,6 +413,8 @@ function Board(game) {
         //console.log(enemyboard); // contains my shots
         if (self.game.status != "setup") {
             $('#shipDisplay').hide();
+        } else {
+            $('#shipDisplay').show();
         }
 
         if (myboard != undefined) {
@@ -439,11 +461,11 @@ function Board(game) {
     }
 
     self.visualizeAllShots = function () {
-        for (i = 0; i < self.shots.length; i++){
+        for (i = 0; i < self.shots.length; i++) {
             self.visualizeShot(self.shots[i], false);
         }
-        for (i = 0; i < self.enemyshots.length; i++){
-            self.visualizeShot(self.enemyshots[i],  true);
+        for (i = 0; i < self.enemyshots.length; i++) {
+            self.visualizeShot(self.enemyshots[i], true);
         }
     }
 
@@ -471,7 +493,7 @@ function Board(game) {
                     } else if (result == "WINNER") {
                         alert("You won the game!");
                     }
-                    
+                    self.game.loadMoreInfo(self.game.id);
                 }
 
             });
@@ -485,5 +507,9 @@ function Board(game) {
         //TODO do this later
     }
     
+    self.update = function(){
+        
+    }
+
     self.load();
 }

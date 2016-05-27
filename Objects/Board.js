@@ -13,12 +13,15 @@ function Board(game) {
     self.load = function () {
         self.loadField();
         self.addListeners();
-        if (self.game.status == "setup") {
+        if (self.game.status == "setup" && self.placedShips.length>0) {
             self.loadShips();
+            $('#shipDisplay').show();
+        } else {
+            $('#shipDisplay').hide();
         }
     }
 
-    
+
 
 
     self.searchField = function (input) {
@@ -152,6 +155,7 @@ function Board(game) {
                 self.fields[self.letters[j]][i] = new Field(self.letters[j], (i + 1));
             }
         }
+
     }
 
     self.loadShips = function () {
@@ -302,8 +306,8 @@ function Board(game) {
                     el.removeClass("drop");
                 }
             }
-            
-            
+
+
 
 
         });
@@ -411,11 +415,7 @@ function Board(game) {
 
         //console.log(myboard); // contains shots from enemy at me
         //console.log(enemyboard); // contains my shots
-        if (self.game.status != "setup") {
-            $('#shipDisplay').hide();
-        } else {
-            $('#shipDisplay').show();
-        }
+
 
         if (myboard != undefined) {
             if (myboard.ships.length > 0) {
@@ -431,9 +431,15 @@ function Board(game) {
                 self.placedShips.push(s);
 
             }
+
             //console.log(self.ships);
-            self.shots = enemyboard.shots;
-            self.enemyshots = myboard.shots;
+            if (enemyboard != null && enemyboard.shots != null) {
+                self.shots = enemyboard.shots;
+            }
+            if (myboard != null && myboard.shots != null) {
+                self.enemyshots = myboard.shots;
+            }
+
             //console.log(self.shots);
             //console.log(self.enemyshots);
             self.visualizeAllShots();
@@ -441,6 +447,10 @@ function Board(game) {
                 self.drawOutline(i);
                 self.drawShipName(i);
             }
+
+        } else {
+
+            
 
         }
     }
@@ -506,9 +516,9 @@ function Board(game) {
     self.createPopup = function (title, message, buttons) {
         //TODO do this later
     }
-    
-    self.update = function(){
-        
+
+    self.update = function () {
+
     }
 
     self.load();

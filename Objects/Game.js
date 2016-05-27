@@ -49,7 +49,12 @@ function Game(id, status, eID, eName) {
 
 	self.shouldPoll = function () {
 		// polling if game has started and its not your turn, or if game is in setup, and you placed your ships
-		if (!self.yourTurn && self.status == "started" || self.status == "setup" && self.board.placedShips.length == self.board.ships.length) {
+		if (self.board != null){
+			if (self.status == "setup" && self.board.placedShips.length == self.board.ships.length) {
+				return true;
+			}
+		}
+		if (!self.yourTurn && self.status == "started") {
 			return true;
 		}
 		return false;

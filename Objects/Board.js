@@ -7,14 +7,16 @@ function Board(game) {
     self.enemyshots = [];
     self.letters = "ABCDEFGHIJ".split("");
     self.game = game;
+    self.shipsPlaced = false;
     self.dropConfirmed = false;
 
     //Methods
     self.load = function () {
         self.loadField();
         self.addListeners();
-        if (self.game.status == "setup" && self.placedShips.length>0) {
+        if (self.game.status == "setup" && self.placedShips.length < 5) {
             self.loadShips();
+
             $('#shipDisplay').show();
         } else {
             $('#shipDisplay').hide();
@@ -70,6 +72,7 @@ function Board(game) {
                 method: "POST",
                 success: function (result) {
                     self.game.loadMoreInfo(self.game.id);
+                    self.placedShips = true;
                     //console.log(result);
                     // for (i = 0; i < result.length; i++) {
                     //     self.ships.push(new Ship(result[i]._id,result[i].name, result[i].length, true))
@@ -415,7 +418,18 @@ function Board(game) {
 
         //console.log(myboard); // contains shots from enemy at me
         //console.log(enemyboard); // contains my shots
-
+        //console.log(self.game);
+        if (self.game.status == "setup" && myboard != undefined && myboard.ships.length == 5) {
+            shipsPlaced = true;
+        }
+        var text = "You are playing versus " + self.game.enemyName + ". It's ";
+        if (self.game.yourTurn) {
+            text += "your";
+        } else {
+            text += "his";
+        }
+        text += " turn.";
+        $('#enemyText')[0].innerHTML = text;
 
         if (myboard != undefined) {
             if (myboard.ships.length > 0) {
@@ -439,7 +453,7 @@ function Board(game) {
             if (myboard != null && myboard.shots != null) {
                 self.enemyshots = myboard.shots;
             }
-
+            self.load();
             //console.log(self.shots);
             //console.log(self.enemyshots);
             self.visualizeAllShots();
@@ -448,10 +462,11 @@ function Board(game) {
                 self.drawShipName(i);
             }
 
-        } else {
+        }
 
-            
 
+        if (self.game.shouldPoll()) {
+            poller = setTimeout(function () { self.game.loadMoreInfo(self.game.id) }, 5000);
         }
     }
 
@@ -521,5 +536,4 @@ function Board(game) {
 
     }
 
-    self.load();
 }

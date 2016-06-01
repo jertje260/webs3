@@ -1,6 +1,7 @@
 var profile = null;
 var gamelist = null;
 var currentGame = null;
+var poller;
 //var sock = new MySocket(); //check this later.
 //console.log(sock);
 var pagelist = {};
@@ -103,6 +104,7 @@ $(function () {
 });
 
 var loadContent = function (url) {
+    clearTimeout(poller);
     if (pagelist[url] == "#profilepage") {
         if (profile == null) {
             profile = new Profile();

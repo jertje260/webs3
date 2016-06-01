@@ -28,7 +28,7 @@
     background-color: deepskyblue;
 
 }
-.modal {
+#spinner {
     display:    none;
     position:   fixed;
     z-index:    1000;
@@ -36,8 +36,7 @@
     left:       0;
     height:     100%;
     width:      100%;
-    background: rgba( 255, 255, 255, .8 ) 
-                url('./Resources/ring.gif') 
+    background: url('./Resources/ring.gif') 
                 50% 50% 
                 no-repeat;
 }
@@ -176,10 +175,14 @@ p{
     word-wrap: break-word; 
     width:50px;
 }
-div {
+div.showme {
     margin: auto;
     width:90%;
     align-content: center;
+}
+.modal-header{
+    background-color: #337ab7;
+    color: #fff;
 }
 nav div {
     margin-left: 0px;

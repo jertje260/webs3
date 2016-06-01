@@ -14,13 +14,6 @@ function Board(game) {
     self.load = function () {
         self.loadField();
         self.addListeners();
-        if (self.game.status == "setup" && self.placedShips.length < 5) {
-            self.loadShips();
-
-            $('#shipDisplay').show();
-        } else {
-            $('#shipDisplay').hide();
-        }
     }
 
 
@@ -82,7 +75,8 @@ function Board(game) {
                 }
             });
         } else {
-            alert("not all ships are placed!");
+            createPopup("Ship placement", "You haven't placed all the ships, please try again.");
+           // alert("not all ships are placed!");
         }
     }
 
@@ -210,7 +204,8 @@ function Board(game) {
                     // setting outline for ship
                     self.drawOutline(shipnumber);
                 } else {
-                    alert("You cant place this ship here!");
+                    createPopup("Ship placement", "This ship cannot be placed here, please try again.");
+                    //alert("You cant place this ship here!");
                 }
             });
             drop[i].addEventListener('dragover', function (event) {
@@ -285,7 +280,8 @@ function Board(game) {
                         event.srcElement.innerHTML = "Vertical";
                     }
                 } else {
-                    alert("Can't turn this ship");
+                    //alert("Can't turn this ship");
+                    createPopup("Ship turning", "You cannot turn this ship here.");
                 }
             });
         }
@@ -315,7 +311,7 @@ function Board(game) {
 
         });
         $('.field').on('click', function (event) {
-            console.log(self.game);
+            //console.log(self.game);
             if (self.game.yourTurn == true && self.game.status == "started") {
                 self.shootAt(event.toElement.id);
             } else {
@@ -327,12 +323,15 @@ function Board(game) {
                         } else {
                             text = "You lost, you fool!";
                         }
-                        alert("The game is finished. " + text);
+                        //alert("The game is finished. " + text);
+                        createPopup("Game Over", "The game is over." + text);
                     } else {
-                        alert("The game hasn't started yet");
+                        createPopup("Game Status", "The game hasn't started yet, please wait untill the other player has placed their ships.");
+                        //alert("The game hasn't started yet");
                     }
                 } else {
-                    alert("It's not your turn!");
+                    createPopup("Turn", "It's not your turn, please wait untill the other player has done his turn.");
+                    //alert("It's not your turn!");
                 }
             }
         });
@@ -453,7 +452,6 @@ function Board(game) {
             if (myboard != null && myboard.shots != null) {
                 self.enemyshots = myboard.shots;
             }
-            self.load();
             //console.log(self.shots);
             //console.log(self.enemyshots);
             self.visualizeAllShots();
@@ -463,9 +461,16 @@ function Board(game) {
             }
 
         }
+        if (self.game.status == "setup" && self.placedShips.length < 5) {
+            self.loadShips();
 
+            $('#shipDisplay').show();
+        } else {
+            $('#shipDisplay').hide();
+        }
 
         if (self.game.shouldPoll()) {
+            console.log("polling")
             poller = setTimeout(function () { self.game.loadMoreInfo(self.game.id) }, 5000);
         }
     }
@@ -512,11 +517,14 @@ function Board(game) {
                         }
                         self.shots.push(json);
                         self.visualizeShot(json);
-                        alert("You shot at " + e.x + (e.y));
-                    } else if (result == "FAIL") {
-                        alert("You already shot at " + e.x + (e.y) + ". Try another field");
+                        //alert("You shot at " + e.x + (e.y));
+                        createPopup("Shot", "You shot at " + e.x + (e.y)+" and it " + (result=="BOOM"?"hit.":"missed."));
+                    } else if (result == "FAIL") { // shouldn't happen.
+                        createPopup("Shot", "You already shot at " + e.x + (e.y) + ". Sadly this message comes from the server, you have to wait untill your next turn.");
+                        //alert("You already shot at " + e.x + (e.y) + ". Try another field");
                     } else if (result == "WINNER") {
-                        alert("You won the game!");
+                        createPopup("Game Over", "You won the game! Congratulations!");
+                        //alert("You won the game!");
                     }
                     self.game.loadMoreInfo(self.game.id);
                 }
@@ -524,14 +532,12 @@ function Board(game) {
             });
 
         } else {
-            alert("You already shot at " + e.x + (e.y) + ". Try another field");
+            createPopup("Shot", "You already shot at " + e.x + (e.y) + ". Try another field.");
+            //alert("You already shot at " + e.x + (e.y) + ". Try another field");
         }
     }
 
-    self.createPopup = function (title, message, buttons) {
-        //TODO do this later
-    }
-
+    self.load();
     self.update = function () {
 
     }

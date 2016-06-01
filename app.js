@@ -55,18 +55,18 @@ pagelist["/webs3/?page=game&id="] = "#gamepage";
 //     hideAndShow("#" + element.attr('id') + "page", '#homepage');
 // });
 
-$body = $('body');
 $(document).on({
     ajaxStart: function () {
-        $body.addClass("loading");
+        $('#spinner').modal('show');
     },
     ajaxStop: function () {
-        $body.removeClass("loading");
+        $('#spinner').modal('hide');
     }
 });
 
 $(document).ready(function () {
-    loadContent("/webs3/" + window.location.search);
+    loadContent(location.pathname + location.search);
+    //history.pushState({ "URL": "/webs3/", "toLoad": "/webs3/" + window.location.search, }, 'New URL: ' + "/webs3/" + window.location.search, "/webs3/" + window.location.search);
 });
 
 // var hideAndShow = function (idToShow) {
@@ -85,10 +85,11 @@ $(document).ready(function () {
 $(function () {
     $('nav a').click(function (e) {
         href = $(this).attr("href");
+        console.log(href);
         loadContent(href);
 
         // HISTORY.PUSHSTATE
-        history.pushState({ "URL": "/webs3/", "toLoad": href, }, 'New URL: ' + href, href);
+        history.pushState({ "URL": href, "toLoad": href, }, 'New URL: ' + href, href);
         e.preventDefault();
 
 
@@ -96,15 +97,31 @@ $(function () {
 
     // THIS EVENT MAKES SURE THAT THE BACK/FORWARD BUTTONS WORK AS WELL
     window.onpopstate = function (event) {
-        console.log(event);
-        console.log("pathname: " + location.pathname);
-        loadContent(location.pathname);
+        //console.log(event);
+        console.log("pathname: " + location.pathname + location.search);
+        loadContent(location.pathname + location.search);
     };
 
 });
 
+var createPopup = function (title, message, callback) {
+    //TODO do this later
+    $('#closebutton').unbind();
+    $('#myModalLabel')[0].innerHTML = title;
+    $('.modal-body')[0].innerHTML = message;
+    if(callback != undefined){
+        $('#closebutton').on('click', function(){
+            console.log("click fired");
+            callback();
+        });
+    }
+    $('#myModal').modal('show');
+    
+}
+
 var loadContent = function (url) {
     clearTimeout(poller);
+    console.log("loading content " + url);
     if (pagelist[url] == "#profilepage") {
         if (profile == null) {
             profile = new Profile();
@@ -118,7 +135,9 @@ var loadContent = function (url) {
     } else if (url.startsWith("/webs3/?page=game&id")) {
         var gameid = url.split("/webs3/?page=game&id=")[1];
         currentGame = new Game();
+
         currentGame.loadMoreInfo(gameid);
+        
         url = "/webs3/?page=game&id=";
     }
     $('.showme').addClass('hideme');
@@ -131,6 +150,9 @@ var loadContent = function (url) {
     if (!url.startsWith("/webs3/?page=game&id")) {
         $('li').removeClass('active');
         $('a[href="' + url + '"]').parent().addClass('active');
+    } else {
+        $('li').removeClass('active');
+        $('a[href="/webs3/?page=games"]').parent().addClass('active');
     }
 
 }

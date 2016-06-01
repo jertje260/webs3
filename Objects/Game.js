@@ -15,15 +15,17 @@ function Game(id, status, eID, eName) {
 		ajax.url = url + "/games/" + self.id + token;
 		ajax.success =
 			function (result) {
-				//console.log(result);
+				console.log(result);
+				if(!result.msg){
 				self.status = result.status;
 				self.enemyID = result.enemyId;
 				self.enemyName = result.enemyName;
 				self.yourTurn = result.yourTurn;
 				self.youWon = result.youWon;
-				//console.log(self);
+				
 				self.load();
 				self.board.loadObjects(result.myGameboard, result.enemyGameboard);
+				console.log(self);
 				if (result.status == "started") {
 
 
@@ -38,6 +40,16 @@ function Game(id, status, eID, eName) {
 				} else if (result.status == "done") {
 					// load board and show winner
 					self.isDone = true;
+				}
+				} else {
+					createPopup("Error!", result.msg, function(){
+						
+						var href = location.pathname + "?page=games";
+						console.log("pushing state back " + href);
+						
+						history.pushState({ "URL": href, "toLoad": href, }, 'New URL: ' + href, href);
+						loadContent(href);
+					});
 				}
 			};
 		$.ajax(ajax);

@@ -7,7 +7,7 @@ function Game(id, status, eID, eName) {
 	self.yourTurn;
 	self.youWon;
 	self.isDone;
-	self.board;
+	self.board = null;
 
 	self.loadMoreInfo = function (id) {
 		self.id = id;
@@ -45,11 +45,17 @@ function Game(id, status, eID, eName) {
 				ajax.timeout = 5000;
 			}
 		$.ajax(ajax);
+		
 	}
 
 	self.shouldPoll = function () {
 		// polling if game has started and its not your turn, or if game is in setup, and you placed your ships
-		if (!self.yourTurn && self.status == "started" || self.status == "setup" && self.board != undefined && self.board.placedShips.length == self.board.ships.length) {
+		if (self.board != null){
+			if (self.status == "setup" && self.board.placedShips.length == self.board.ships.length) {
+				return true;
+			}
+		}
+		if (!self.yourTurn && self.status == "started") {
 			return true;
 		}
 		return false;
@@ -59,7 +65,6 @@ function Game(id, status, eID, eName) {
 		if (self.board == null) {
 			self.board = new Board(self);
 		}
-		loadContent("/webs3/game/");
 	}
 
 

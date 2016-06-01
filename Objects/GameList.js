@@ -1,32 +1,25 @@
-function GameList() {
-
+function GameList(show) {
+	
 
 	//events
 	$('#allGames').on('click', 'tr', function (event) {
-		var id = event.currentTarget.id;
-		//load this game
-		console.log("click on" + id);
-		self.currentGame = self.findGame(id);
-		if (self.currentGame != null) {
-			self.currentGame.loadMoreInfo(self.currentGame.id);
-
-		}
-		
 		href = $(this).attr("href");
         loadContent(href);
 
         // HISTORY.PUSHSTATE
         history.pushState('', 'New URL: ' + href, href);
         event.preventDefault();
-		
+
 
 	});
 
 	var self = this;
 	self.games = [];
 	self.loadingGames = false;
-	self.currentGame;
-	self.getGames = function () {
+	self.getGames = function (show) {
+		if(show == undefined){
+			show = true;
+		}
 		if (!self.loadingGames) {
 			self.loadingGames = true
 			self.games = [];
@@ -36,7 +29,9 @@ function GameList() {
 					for (i = 0; i < result.length; i++) {
 						self.games.push(new Game(result[i]._id, result[i].status, result[i].enemyId, result[i].enemyName));
 					}
-					self.viewGames();
+					if (show) {
+						self.viewGames();
+					}
 					self.loadingGames = false;
 				}
 			});
@@ -77,7 +72,7 @@ function GameList() {
 		$('#allGames tbody').empty();
 		//$('#allGames tbody').append('<th>Game ID</th><th>Status</th><th>Enemy name</th>');
 		for (i = 0; i < self.games.length; i++) {
-			$('#allGames tbody').append('<tr href="/webs3/game/' + self.games[i].id + '" id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + self.games[i].enemyName + '</td></tr>');
+			$('#allGames tbody').append('<tr href="/webs3/?page=game&id=' + self.games[i].id + '" id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + self.games[i].enemyName + '</td></tr>');
 		}
 	}
 
@@ -91,7 +86,12 @@ function GameList() {
 	}
 
 	//code to execute on load
-	self.getGames();
+	if(show == undefined){
+			self.getGames(true);
+	} else {
+		self.getGames(false);
+	}
+
 	$('#newGame').on('click', function () {
 		self.newGame(false);
 	});

@@ -176,9 +176,6 @@ p{
     word-wrap: break-word; 
     width:50px;
 }
-li a{
-    cursor: pointer
-}
 div {
     margin: auto;
     width:90%;
@@ -247,4 +244,10 @@ nav div {
     float: left;
     width: 250px;
 }
+.showme {
+    display: block;
+}
 
+.hideme {
+    display: none;
+}

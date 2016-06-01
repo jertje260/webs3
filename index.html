@@ -21,19 +21,19 @@
         </div>
         <div id="navbar-collapse-1" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-left">
-                <li id="home" class="active"> <a>Home</a> </li>
-                <li id="profile"> <a>Profile</a> </li>
-                <li id="mygames"> <a>My Games</a> </li>
-                <li id="todo"> <a>TODO</a> </li>
+                <li id="home" class="active"> <a href="/webs3/">Home</a> </li>
+                <li id="profile"> <a href="/webs3/profile">Profile</a> </li>
+                <li id="mygames"> <a href="/webs3/games">My Games</a> </li>
+                <li id="todo"> <a href="/webs3/todo">TODO</a> </li>
 
             </ul>
         </div>
     </nav>
-    <div id="homepage">
+    <div id="homepage" class="showme">
         <h1> Battleship</h1>
         <p> This website allows you to play the game Battleship.</p>
     </div>
-    <div id="gamepage" style="display:none;">
+    <div id="gamepage" class="hideme">
         <div id="board">
             <!--- add enemy name, who's turn it is & enemy last shot -->
             
@@ -85,7 +85,7 @@
             <button typ="button" id="confirmShips" class="btn btn-success">Place Ships</button>
         </div>
     </div>
-    <div id="mygamespage" style="display:none;">
+    <div id="mygamespage" class="hideme">
         <h1>Here are all your games</h1>
         <a class="btn btn-success right" id="newAIGame">New AI Game</a>
         <a class="btn btn-success right" id="newGame">New Game</a>
@@ -102,7 +102,7 @@
             </tbody>
         </table>
     </div>
-    <div id="profilepage" style="display:none;">
+    <div id="profilepage" class="hideme">
         <h1>This is your profile</h1>
         <table class="table">
             <tr>
@@ -115,7 +115,7 @@
             </tr>
         </table>
     </div>
-    <div id="todopage" style="display:none;">
+    <div id="todopage" class="hideme">
         <h1>TODO</h1>
         <ul>
             <li>run through game, but use sockets for this</li>

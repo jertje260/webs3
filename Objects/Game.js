@@ -49,7 +49,7 @@ function Game(id, status, eID, eName) {
 
 	self.shouldPoll = function () {
 		// polling if game has started and its not your turn, or if game is in setup, and you placed your ships
-		if (!self.yourTurn && self.status == "started" || self.status == "setup" && self.board.placedShips.length == self.board.ships.length) {
+		if (!self.yourTurn && self.status == "started" || self.status == "setup" && self.board != undefined && self.board.placedShips.length == self.board.ships.length) {
 			return true;
 		}
 		return false;
@@ -59,9 +59,7 @@ function Game(id, status, eID, eName) {
 		if (self.board == null) {
 			self.board = new Board(self);
 		}
-		if (!$('#gamepage').is(':visible')) {
-			hideAndShow("#mygamespage", "#gamepage");
-		}
+		loadContent("/webs3/game/");
 	}
 
 

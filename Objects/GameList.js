@@ -5,11 +5,20 @@ function GameList() {
 	$('#allGames').on('click', 'tr', function (event) {
 		var id = event.currentTarget.id;
 		//load this game
+		console.log("click on" + id);
 		self.currentGame = self.findGame(id);
 		if (self.currentGame != null) {
 			self.currentGame.loadMoreInfo(self.currentGame.id);
 
 		}
+		
+		href = $(this).attr("href");
+        loadContent(href);
+
+        // HISTORY.PUSHSTATE
+        history.pushState('', 'New URL: ' + href, href);
+        event.preventDefault();
+		
 
 	});
 
@@ -68,7 +77,7 @@ function GameList() {
 		$('#allGames tbody').empty();
 		//$('#allGames tbody').append('<th>Game ID</th><th>Status</th><th>Enemy name</th>');
 		for (i = 0; i < self.games.length; i++) {
-			$('#allGames tbody').append('<tr id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + self.games[i].enemyName + '</td></tr>');
+			$('#allGames tbody').append('<tr href="/webs3/game/' + self.games[i].id + '" id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + self.games[i].enemyName + '</td></tr>');
 		}
 	}
 

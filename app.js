@@ -2,15 +2,22 @@ var profile = null;
 var gamelist = null;
 var currentGame = null;
 var poller;
-//var sock = new MySocket(); //check this later.
-//console.log(sock);
+var sock = new MySocket(); //check this later.
+console.log(sock);
 var pagelist = {};
+// pagelist["/webs3/"] = "home.html";
+// pagelist["/webs3/?page=profile"] = "profile.html";
+// pagelist["/webs3/?page=games"] = "gamelist.html";
+// pagelist["/webs3/?page=todo"] = "todo.html";
+// pagelist["/webs3/?page=game&id="] = "game.html";
 
 pagelist["/webs3/"] = "#homepage";
 pagelist["/webs3/?page=profile"] = "#profilepage";
 pagelist["/webs3/?page=games"] = "#mygamespage";
 pagelist["/webs3/?page=todo"] = "#todopage";
 pagelist["/webs3/?page=game&id="] = "#gamepage";
+
+
 //pagelist["/webs/"] = "homepage";
 
 // navbar event listeners
@@ -156,6 +163,3 @@ var loadContent = function (url) {
     }
 
 }
-
-
-

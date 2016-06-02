@@ -1,6 +1,7 @@
 function MySocket() {
     var self = this;
-    self.socket = io.connect(url, token);
+    var options = { query: token };
+    self.socket = io.connect(url, options);
 
     self.socket.on('update', function (update) {
         console.log(update);

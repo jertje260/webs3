@@ -1,4 +1,4 @@
-var profile = null;
+/*var profile = null;
 var gamelist = null;
 var currentGame = null;
 var poller;
@@ -163,3 +163,48 @@ var loadContent = function (url) {
     }
 
 }
+*/
+
+function ZeeslagApp() {
+    var self = this;
+    self.pagelist = {};
+    self.pagelist["/webs3/"] = "home.html";
+    self.pagelist["/webs3/?page=profile"] = "profile.html";
+    self.pagelist["/webs3/?page=games"] = "gamelist.html";
+    self.pagelist["/webs3/?page=todo"] = "todo.html";
+    self.pagelist["/webs3/?page=game&id="] = "game.html";
+
+    self.setCtrl = function (controller) {
+        self.ctrl = controller;
+    }
+
+    self.loadPage = function (url, callback) {
+        if (callback == undefined) {
+            $.get(url, function (html) {
+                $('#view').empty().append(html);
+            });
+        } else {
+            $.get(url, callback(html));
+        }
+    }
+
+
+    self.bindEvents = function () {
+        $('#navbar-collapse-1').on('click', 'ul li', function (event) {
+            var href = event.target.href.split('http://localhost')[1];
+     
+
+            if (href.startsWith('/webs3/?page=games')) {
+                self.setCtrl(new GamelistCtrl(self));
+            } else {
+                self.loadPage(self.pagelist[href]);
+            }
+
+
+
+        });
+    }
+    self.bindEvents();
+}
+
+var app = new ZeeslagApp();

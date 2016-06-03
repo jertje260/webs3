@@ -2,16 +2,16 @@ function GameList(show) {
 	
 
 	//events
-	$('#allGames').on('click', 'tr', function (event) {
-		href = $(this).attr("href");
-        loadContent(href);
+	// $('#allGames').on('click', 'tr', function (event) {
+	// 	href = $(this).attr("href");
+    //     loadContent(href);
 
-        // HISTORY.PUSHSTATE
-        history.pushState('', 'New URL: ' + href, href);
-        event.preventDefault();
+    //     // HISTORY.PUSHSTATE
+    //     history.pushState('', 'New URL: ' + href, href);
+    //     event.preventDefault();
 
 
-	});
+	// });
 
 	var self = this;
 	self.games = [];
@@ -92,13 +92,13 @@ function GameList(show) {
 		self.getGames(false);
 	}
 
-	$('#newGame').on('click', function () {
-		self.newGame(false);
-	});
-	$('#newAIGame').on('click', function () {
-		self.newGame(true);
-	});
-	$('#deleteGames').on('click', function () {
-		self.deleteGames();
-	});
+	// $('#newGame').on('click', function () {
+	// 	self.newGame(false);
+	// });
+	// $('#newAIGame').on('click', function () {
+	// 	self.newGame(true);
+	// });
+	// $('#deleteGames').on('click', function () {
+	// 	self.deleteGames();
+	// });
 }

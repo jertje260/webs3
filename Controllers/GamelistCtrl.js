@@ -3,11 +3,11 @@ function GamelistCtrl(app) {
     self.gamelist
 
     self.load = function () {
-        $.get('gamelist.html', function(html){
-           $('#view').empty().append(html);
-           self.gamelist = new GameList();
+        app.loadPage('gamelist.html', function(html){
+             $('#view').empty().append(html);
+           self.gamelist = new GameList(self);
            self.bindEvents();
-        });
+        })
     }
 
 
@@ -15,10 +15,15 @@ function GamelistCtrl(app) {
         $('#allGames').on('click', 'tr', function (event) {
             href = $(this).attr("href");
             id = href.split('id=')[1];
+            var game = self.gamelist.findGame(id);
+            if(game.status == "queue"){
+                // show popup
+            }else {
             app.ctrl = new GameCtrl(app, id);
 
             // HISTORY.PUSHSTATE
             history.pushState('', 'New URL: ' + href, href);
+            }
             event.preventDefault();
         });
 
@@ -32,6 +37,10 @@ function GamelistCtrl(app) {
             self.deleteGames();
         });
 
+    }
+    
+    self.draw = function(){
+        
     }
 
 }

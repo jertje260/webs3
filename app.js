@@ -167,44 +167,65 @@ var loadContent = function (url) {
 
 function ZeeslagApp() {
     var self = this;
+    self.profile = null;
     self.pagelist = {};
-    self.pagelist["/webs3/"] = "home.html";
-    self.pagelist["/webs3/?page=profile"] = "profile.html";
-    self.pagelist["/webs3/?page=games"] = "gamelist.html";
-    self.pagelist["/webs3/?page=todo"] = "todo.html";
-    self.pagelist["/webs3/?page=game&id="] = "game.html";
+    self.pagelist["/webs3/"] = "Templates\/home.html";
+    self.pagelist["/webs3/?page=profile"] = "Templates\/profile.html";
+    self.pagelist["/webs3/?page=games"] = "Templates\/gamelist.html";
+    self.pagelist["/webs3/?page=todo"] = "Templates\/todo.html";
+    self.pagelist["/webs3/?page=game&id="] = "Templates\/game.html";
 
     self.setCtrl = function (controller) {
         self.ctrl = controller;
     }
 
     self.loadPage = function (url, callback) {
-        if (callback == undefined) {
-            $.get(url, function (html) {
-                $('#view').empty().append(html);
+        $.get(url, function (html) {
+            $('#view').empty().append(html);
+            if (callback != undefined) {
+                callback();
+            }
+        });
+    }
+
+    self.loadFromUrl = function () {
+        console.log(location.search);
+        if (location.search == "?page=profile") {
+            if (self.profile == null) {
+                self.profile = new Profile();
+            }
+            self.loadPage(self.pagelist[location.pathname + location.search], function () {
+                self.profile.draw();
             });
         } else {
-            $.get(url, callback(html));
+            self.loadPage(self.pagelist[location.pathname + location.search]);
         }
     }
 
-
     self.bindEvents = function () {
-        $('#navbar-collapse-1').on('click', 'ul li', function (event) {
-            var href = event.target.href.split('http://localhost')[1];
-     
+        $('nav a').click(function (e) {
+            href = $(this).attr("href");
+            
+            self.loadPage(self.pagelist[href]);
 
-            if (href.startsWith('/webs3/?page=games')) {
-                self.setCtrl(new GamelistCtrl(self));
-            } else {
-                self.loadPage(self.pagelist[href]);
-            }
-
+            // HISTORY.PUSHSTATE
+            history.pushState({ "URL": href, "toLoad": href, }, 'New URL: ' + href, href);
+            e.preventDefault();
 
 
         });
+
+        // THIS EVENT MAKES SURE THAT THE BACK/FORWARD BUTTONS WORK AS WELL
+        window.onpopstate = function (event) {
+            //console.log(event);
+            console.log("pathname: " + location.pathname + location.search);
+            self.loadPage(location.pathname + location.search);
+        };
+
     }
+
     self.bindEvents();
+    self.loadFromUrl();
 }
 
 var app = new ZeeslagApp();

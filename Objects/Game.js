@@ -28,7 +28,7 @@ function Game(id, status, eID, eName, ctrl) {
 					if (self.board == null) {
 						self.board = new Board(self);
 					}
-					self.board.loadObjects(result.myGameboard, result.enemyGameboard);
+					self.loadObjects(result.myGameboard, result.enemyGameboard);
 					console.log(self);
 					if (result.status == "started") {
 
@@ -76,7 +76,67 @@ function Game(id, status, eID, eName, ctrl) {
 		return false;
 	}
 
+ self.loadObjects = function (myboard, enemyboard) {
 
+        //console.log(myboard); // contains shots from enemy at me
+        //console.log(enemyboard); // contains my shots
+        //console.log(self.game);
+        if (self.status == "setup" && myboard != undefined && myboard.ships.length == 5) {
+            shipsPlaced = true;
+        }
+        var text = "You are playing versus " + self.game.enemyName + ". It's ";
+        if (self.game.yourTurn) {
+            text += "your";
+        } else {
+            text += "his";
+        }
+        text += " turn.";
+        $('#enemyText')[0].innerHTML = text;
+
+        if (myboard != undefined) {
+            if (myboard.ships.length > 0) {
+                self.ships = [];
+                self.placedShips = [];
+            }
+            for (i = 0; i < myboard.ships.length; i++) {
+                var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
+                s.x = myboard.ships[i].startCell.x.toUpperCase();
+                s.y = myboard.ships[i].startCell.y;
+                s.hits = myboard.ships[i].hits;
+                self.ships.push(s)
+                self.placedShips.push(s);
+
+            }
+
+            //console.log(self.ships);
+            if (enemyboard != null && enemyboard.shots != null) {
+                self.shots = enemyboard.shots;
+            }
+            if (myboard != null && myboard.shots != null) {
+                self.enemyshots = myboard.shots;
+            }
+            //console.log(self.shots);
+            //console.log(self.enemyshots);
+            self.visualizeAllShots();
+            for (i = 0; i < self.placedShips.length; i++) {
+                self.drawOutline(i);
+                self.drawShipName(i);
+            }
+
+        }
+        if (self.game.status == "setup" && self.placedShips.length < 5) {
+            self.loadShips();
+
+            $('#shipDisplay').show();
+        } else {
+            $('#shipDisplay').hide();
+        }
+
+        if (self.game.shouldPoll()) {
+            console.log("polling")
+            poller = setTimeout(function () { self.game.loadMoreInfo(self.game.id) }, 5000);
+        }
+    }
 
 
 }

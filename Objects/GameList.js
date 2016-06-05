@@ -1,4 +1,4 @@
-function GameList(show) {
+function GameList(ctrl) {
 	
 
 	//events
@@ -16,10 +16,7 @@ function GameList(show) {
 	var self = this;
 	self.games = [];
 	self.loadingGames = false;
-	self.getGames = function (show) {
-		if(show == undefined){
-			show = true;
-		}
+	self.getGames = function () {
 		if (!self.loadingGames) {
 			self.loadingGames = true
 			self.games = [];
@@ -29,10 +26,8 @@ function GameList(show) {
 					for (i = 0; i < result.length; i++) {
 						self.games.push(new Game(result[i]._id, result[i].status, result[i].enemyId, result[i].enemyName));
 					}
-					if (show) {
-						self.viewGames();
-					}
 					self.loadingGames = false;
+					ctrl.draw();
 				}
 			});
 		}
@@ -68,13 +63,6 @@ function GameList(show) {
 	}
 
 
-	self.viewGames = function () {
-		$('#allGames tbody').empty();
-		//$('#allGames tbody').append('<th>Game ID</th><th>Status</th><th>Enemy name</th>');
-		for (i = 0; i < self.games.length; i++) {
-			$('#allGames tbody').append('<tr href="/webs3/?page=game&id=' + self.games[i].id + '" id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + (self.games[i].enemyName == undefined?"":self.games[i].enemyName) + '</td></tr>');
-		}
-	}
 
 	self.findGame = function (id) {
 		for (i = 0; i < self.games.length; i++) {
@@ -85,12 +73,7 @@ function GameList(show) {
 		return null;
 	}
 
-	//code to execute on load
-	if(show == undefined){
-			self.getGames(true);
-	} else {
-		self.getGames(false);
-	}
+	
 
 	// $('#newGame').on('click', function () {
 	// 	self.newGame(false);

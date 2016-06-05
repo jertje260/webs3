@@ -177,11 +177,13 @@ function ZeeslagApp() {
 
     self.setCtrl = function (controller) {
         self.ctrl = controller;
+        self.ctrl.load();
     }
 
     self.loadPage = function (url, callback) {
         $.get(url, function (html) {
             $('#view').empty().append(html);
+            console.log("loading view");
             if (callback != undefined) {
                 callback();
             }
@@ -189,27 +191,24 @@ function ZeeslagApp() {
     }
 
     self.loadFromUrl = function () {
-        console.log(location.search);
-        if (location.search == "?page=profile") {
-            if (self.profile == null) {
-                self.profile = new Profile();
-            }
-            self.loadPage(self.pagelist[location.pathname + location.search], function () {
-                self.profile.draw();
-            });
+
+        if (location.search == "?page=games") {
+            self.setCtrl(new GamelistCtrl(self));
+        } else if (location.search.startsWith("?page=game&id=")) {
+            var id = location.search.split('id=')[1];
+            self.setCtrl(new GameCtrl(self, id));
+
         } else {
-            self.loadPage(self.pagelist[location.pathname + location.search]);
+            self.setCtrl(new BaseCtrl(self));
         }
     }
 
     self.bindEvents = function () {
         $('nav a').click(function (e) {
-            href = $(this).attr("href");
-            
-            self.loadPage(self.pagelist[href]);
 
             // HISTORY.PUSHSTATE
             history.pushState({ "URL": href, "toLoad": href, }, 'New URL: ' + href, href);
+            self.loadFromUrl();
             e.preventDefault();
 
 
@@ -219,10 +218,25 @@ function ZeeslagApp() {
         window.onpopstate = function (event) {
             //console.log(event);
             console.log("pathname: " + location.pathname + location.search);
-            self.loadPage(location.pathname + location.search);
+            self.loadFromUrl(self.pagelist[location.pathname + location.search]);
         };
 
     }
+    
+    self.createPopup = function (title, message, callback) {
+    //TODO do this later
+    $('#closebutton').unbind();
+    $('#myModalLabel')[0].innerHTML = title;
+    $('.modal-body')[0].innerHTML = message;
+    if(callback != undefined){
+        $('#closebutton').on('click', function(){
+            console.log("click fired");
+            callback();
+        });
+    }
+    $('#myModal').modal('show');
+    
+}
 
     self.bindEvents();
     self.loadFromUrl();

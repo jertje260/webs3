@@ -22,7 +22,8 @@ function Profile() {
 			$('#profileid').html(self.id);
 			$('#profilename').html(self.naam);
 		} else {
-			self.loadProfile(show);
+			console.log("loading profile");
+			self.loadProfile(true);
 		}	
 	}
 }

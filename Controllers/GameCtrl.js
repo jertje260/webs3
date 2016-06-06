@@ -3,6 +3,13 @@ function GameCtrl(app, id) {
     self.game;
     self.letters = "ABCDEFGHIJ".split("");
     self.app = app;
+    self.shot;
+    self.miss;
+    self.hit;
+    self.playlist = [];
+    self.playno = 0;
+    self.isPlaying = false;
+
 
     self.load = function () {
         self.game = new Game(id, null, null, null, self);
@@ -11,19 +18,43 @@ function GameCtrl(app, id) {
     }
 
     self.bindEvents = function () {
+
         $('.clickable').on('click', function (event) {
             self.flipShip(event);
         });
         $('.field').on('click', function (event) {
             self.shoot(event);
-        })
+        });
+        $('#confirmShips').on('click', function (event) {
+            self.game.sendShips();
+        });
+        self.shot = document.createElement('audio');
+        self.miss = document.createElement('audio');
+        self.hit = document.createElement('audio');
+        self.shot.setAttribute('src', 'Resources/battleshot.mp3');
+        self.miss.setAttribute('src', 'Resources/splash.mp3');
+        self.hit.setAttribute('src', 'Resources/explosion.mp3');
 
+    }
 
+    self.playSounds = function () {
+        self.isPlaying = true;
+        self.playlist[self.playno].play();
+
+        self.playlist[self.playno].onended = function () {
+            if (self.playno + 1 === self.playlist.length) {
+                self.playno++;
+                self.isPlaying = false;
+            } else {
+                self.playno++;
+                self.playSounds();
+            }
+
+        }
     }
 
     self.draw = function () {
         app.loadPage(app.pagelist["/webs3/?page=game&id="], function () {
-            self.bindEvents();
             if (self.game.status == "setup" && !self.game.shipsPlaced) {
                 self.drawShipsTable();
                 self.dragndrop();
@@ -33,6 +64,7 @@ function GameCtrl(app, id) {
             self.drawMisc();
             self.drawShips();
             self.drawShots();
+            self.bindEvents();
         });
 
 
@@ -74,7 +106,7 @@ function GameCtrl(app, id) {
             console.log(shot);
         }
     }
-    
+
     self.drawShots = function () {
         self.visualizeAllShots();
     }
@@ -83,20 +115,21 @@ function GameCtrl(app, id) {
         var ships = self.game.ships;
         $('#ships tbody').empty()
         for (var i = 0; i < ships.length; i++) {
-            $('#ships tbody').append('<tr id="ship' + i + '"><td><div class="drag" id="s' + i + '" draggable="true">' + ships[i].name + '</div></td><td>' + ships[i].length + '</td><td class="clickable">' + ((ships[i].isHorizontal) ? "Horizontal" : "Vertical" )+ '</td>');
+            $('#ships tbody').append('<tr id="' + i + '"><td><div class="drag" id="s' + i + '" draggable="true">' + ships[i].name + '</div></td><td>' + ships[i].length + '</td><td class="clickable">' + ((ships[i].isHorizontal) ? "Horizontal" : "Vertical") + '</td>');
         }
 
     }
 
     self.flipShip = function (event) {
-        var shipid = event.target.replace('s', '');
+        var shipid = event.target.parentElement.id;
         if (self.doesShipFit(shipid, null, null, true)) {
             self.removeOutline(shipid);
+            self.game.ships[shipid].flip();
             if (self.game.ships[shipid].x != null) {
                 self.changeFields(self.game.ships[shipid], true, true);
             }
             self.drawOutline(shipid);
-            event.target.innerHTML = (self.game.ships[shipid].isHorizontal) ? "Horizontal" : "Vertical";
+            event.target.innerHTML = ((self.game.ships[shipid].isHorizontal) ? "Horizontal" : "Vertical");
 
         } else {
             app.createPopup("Ship turning", "You cannot turn this ship here.");
@@ -105,7 +138,7 @@ function GameCtrl(app, id) {
 
     self.shoot = function (event) {
         if (self.game.yourTurn == true && self.game.status == "started") {
-            self.shootAt(event.toElement.id);
+            self.shootAt(event.currentTarget.id);
         } else {
             if (self.game.status != "started") {
                 if (self.game.isDone) {
@@ -128,11 +161,19 @@ function GameCtrl(app, id) {
         }
     }
 
+    self.playSound = function (sound) {
+        self.playlist.push(sound);
+        if (!self.isPlaying) {
+            self.playSounds();
+        }
+    }
+
     self.shootAt = function (elementid) {
         var e = self.searchField(elementid);
         if (!e.clicked) {
             var data = '{"x": "' + e.x.toLowerCase() + '", "y": ' + e.y + '}'
             var json = JSON.parse(data);
+            self.playSound(self.shot);
             //console.log(json);
             $.ajax({
                 url: url + "/games/" + self.game.id + "/shots" + token,
@@ -143,6 +184,9 @@ function GameCtrl(app, id) {
                         e.click();
                         if (result == "BOOM") {
                             json["isHit"] = true;
+                            self.playSound(self.hit);
+                        } else {
+                            self.playSound(self.miss);
                         }
                         self.game.shots.push(json);
                         self.visualizeShot(json);
@@ -198,14 +242,14 @@ function GameCtrl(app, id) {
         return self.game.fields[si[0]][si[1] - 1];
     }
 
-//drag and drop functions
+    //drag and drop functions
     self.dragndrop = function () {
         $('.field').each(function () {
             $(this).addClass('drop');
         });
         var drag = document.querySelectorAll(".drag");
         var drop = document.querySelectorAll(".drop");
-        
+
 
         for (var i = 0; i < drop.length; i++) {
             drop[i].addEventListener('drop', function (event) {
@@ -262,7 +306,7 @@ function GameCtrl(app, id) {
         }
     }
 
-    self.ChangeFields = function (ship, gotShip, flipping) {
+    self.changeFields = function (ship, gotShip, flipping) {
         //console.log(gotShip);
         var index = self.letters.indexOf(ship.x);
         if (ship.isHorizontal) {
@@ -361,4 +405,6 @@ function GameCtrl(app, id) {
             }
         }
     }
+
+
 }

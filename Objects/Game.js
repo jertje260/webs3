@@ -167,16 +167,53 @@ function Game(id, status, eID, eName, ctrl) {
     self.addShip = function (ship, x, y) {
         if (self.placedShips.indexOf(ship) != -1) {
             var index = self.placedShips.indexOf(ship);
-            ctrl.ChangeFields(self.placedShips[index], false);
+            ctrl.changeFields(self.placedShips[index], false);
             self.placedShips[index].x = x;
             self.placedShips[index].y = y;
-            ctrl.ChangeFields(self.placedShips[index], true);
+            ctrl.changeFields(self.placedShips[index], true);
         } else {
             var index = self.ships.indexOf(ship);
             self.ships[index].x = x;
             self.ships[index].y = y;
             self.placedShips.push(self.ships[index]);
-            ctrl.ChangeFields(self.ships[index], true);
+            ctrl.changeFields(self.ships[index], true);
+        }
+    }
+
+self.sendShips = function () {
+        if (self.placedShips.length == 5) {
+            var data = '{ "ships": [';
+            for (i = 0; i < self.placedShips.length; i++) {
+                data += '{"_id": ' + self.placedShips[i].id;
+                data += ', "length": ' + self.placedShips[i].length;
+                data += ', "name": "' + self.placedShips[i].name;
+                data += '", "startCell": {"x": "' + self.placedShips[i].x.toLowerCase() + '", "y": ' + self.placedShips[i].y;
+                data += '}, "isVertical": ' + (!self.placedShips[i].isHorizontal) + '}';
+                if (i != self.placedShips.length - 1) {
+                    data += ',';
+                }
+            }
+            data += ']}';
+            //console.log(data);
+            var json = JSON.parse(data);
+            $.ajax({
+                url: url + "/games/" + self.id + "/gameboards" + token,
+                data: json,
+                method: "POST",
+                success: function (result) {
+                    self.loadMoreInfo(self.id);
+                    self.placedShips = true;
+                    //console.log(result);
+                    // for (i = 0; i < result.length; i++) {
+                    //     self.ships.push(new Ship(result[i]._id,result[i].name, result[i].length, true))
+
+                    // }
+                    // self.fillShips();
+                }
+            });
+        } else {
+            createPopup("Ship placement", "You haven't placed all the ships, please try again.");
+           // alert("not all ships are placed!");
         }
     }
 

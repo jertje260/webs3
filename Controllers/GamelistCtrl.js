@@ -30,21 +30,32 @@ function GamelistCtrl(app) {
         });
 
         $('#newGame').on('click', function () {
-            self.newGame(false);
+            self.gamelist.newGame(false);
         });
         $('#newAIGame').on('click', function () {
-            self.newGame(true);
+            self.gamelist.newGame(true);
         });
         $('#deleteGames').on('click', function () {
-            self.deleteGames();
+            self.gamelist.deleteGames();
         });
 
     }
 
+    self.turnUpdate = function (turn) {
+        self.gamelist.findGame(turn.gameId).yourTurn = turn.turn;
+        self.draw();
+    }
+
+    self.gameUpdate = function (update) {
+        self.gamelist.findGame(update.gameId).status = update.status;
+        self.draw();
+    }
+
     self.draw = function () {
         console.log(self.gamelist);
+        $('#allGames tbody').empty();
         for (i = 0; i < self.gamelist.games.length; i++) {
-            $('#allGames').append('<tr href="/webs3/?page=game&id=' + self.gamelist.games[i].id + '" id="' + self.gamelist.games[i].id + '"><td>' + self.gamelist.games[i].id + '</td><td>' + self.gamelist.games[i].status + '</td><td>' + (self.gamelist.games[i].enemyName == undefined ? "" : self.gamelist.games[i].enemyName) + '</td></tr>');
+            $('#allGames tbody').append('<tr href="/webs3/?page=game&id=' + self.gamelist.games[i].id + '" id="' + self.gamelist.games[i].id + '"><td>' + self.gamelist.games[i].id + '</td><td>' + self.gamelist.games[i].status + '</td><td>' + (self.gamelist.games[i].enemyName == undefined ? "" : self.gamelist.games[i].enemyName) + '</td><td>' + ((self.gamelist.games[i].yourTurn)?"You":self.gamelist.games[i].enemyName) + '</td></tr>');
         }
     }
 }

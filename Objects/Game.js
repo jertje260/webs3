@@ -7,9 +7,16 @@ function Game(id, status, eID, eName, ctrl) {
 	self.yourTurn;
 	self.youWon;
 	self.isDone;
-	self.board = null;
-	
-	
+	//self.board = null;
+	self.placedShips = [];
+	self.ships = [];
+	self.shipsPlaced = false;
+	self.shots = [];
+	self.enemyShots = [];
+	self.fields = [];
+	self.shipsToPlace = [];
+
+
 
 	self.loadMoreInfo = function (id) {
 		self.id = id;
@@ -24,10 +31,11 @@ function Game(id, status, eID, eName, ctrl) {
 					self.enemyName = result.enemyName;
 					self.yourTurn = result.yourTurn;
 					self.youWon = result.youWon;
-
-					if (self.board == null) {
-						self.board = new Board(self);
-					}
+					self.status = result.status;
+					//self.loadShips();
+					// if (self.board == null) {
+					// 	self.board = new Board(self);
+					// }
 					self.loadObjects(result.myGameboard, result.enemyGameboard);
 					console.log(self);
 					if (result.status == "started") {
@@ -47,13 +55,11 @@ function Game(id, status, eID, eName, ctrl) {
 					}
 					ctrl.draw();
 				} else {
-					createPopup("Error!", result.msg, function () {
+					ctrl.app.createPopup("Error!", result.msg, function () {
 
 						var href = location.pathname + "?page=games";
-						console.log("pushing state back " + href);
-
 						history.pushState({ "URL": href, "toLoad": href, }, 'New URL: ' + href, href);
-						loadContent(href);
+						ctrl.app.loadFromUrl();
 					});
 				}
 			};
@@ -63,6 +69,16 @@ function Game(id, status, eID, eName, ctrl) {
 		$.ajax(ajax);
 	}
 
+    self.loadField = function () {
+        for (j = 0; j < 10; j++) {
+            self.fields[ctrl.letters[j]] = new Array(10);
+
+            for (i = 0; i < 10; i++) {
+                self.fields[ctrl.letters[j]][i] = new Field(ctrl.letters[j], (i + 1));
+            }
+        }
+
+    }
 	self.shouldPoll = function () {
 		// polling if game has started and its not your turn, or if game is in setup, and you placed your ships
 		if (self.board != null) {
@@ -76,67 +92,92 @@ function Game(id, status, eID, eName, ctrl) {
 		return false;
 	}
 
- self.loadObjects = function (myboard, enemyboard) {
+	self.loadObjects = function (myboard, enemyboard) {
 
-        //console.log(myboard); // contains shots from enemy at me
+        console.log(myboard); // contains shots from enemy at me
         //console.log(enemyboard); // contains my shots
         //console.log(self.game);
         if (self.status == "setup" && myboard != undefined && myboard.ships.length == 5) {
             shipsPlaced = true;
         }
-        var text = "You are playing versus " + self.game.enemyName + ". It's ";
-        if (self.game.yourTurn) {
-            text += "your";
-        } else {
-            text += "his";
-        }
-        text += " turn.";
-        $('#enemyText')[0].innerHTML = text;
 
         if (myboard != undefined) {
             if (myboard.ships.length > 0) {
                 self.ships = [];
                 self.placedShips = [];
-            }
-            for (i = 0; i < myboard.ships.length; i++) {
-                var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
-                s.x = myboard.ships[i].startCell.x.toUpperCase();
-                s.y = myboard.ships[i].startCell.y;
-                s.hits = myboard.ships[i].hits;
-                self.ships.push(s)
-                self.placedShips.push(s);
 
-            }
+				for (var i = 0; i < myboard.ships.length; i++) {
+					var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
+					s.x = myboard.ships[i].startCell.x.toUpperCase();
+					s.y = myboard.ships[i].startCell.y;
+					s.hits = myboard.ships[i].hits;
+					self.ships.push(s)
+					self.placedShips.push(s);
+
+				}
+			}
 
             //console.log(self.ships);
             if (enemyboard != null && enemyboard.shots != null) {
                 self.shots = enemyboard.shots;
             }
-            if (myboard != null && myboard.shots != null) {
-                self.enemyshots = myboard.shots;
+            if (myboard.shots != null) {
+                self.enemyShots = myboard.shots;
             }
             //console.log(self.shots);
             //console.log(self.enemyshots);
-            self.visualizeAllShots();
-            for (i = 0; i < self.placedShips.length; i++) {
-                self.drawOutline(i);
-                self.drawShipName(i);
-            }
+            // self.visualizeAllShots();
+            // for (i = 0; i < self.placedShips.length; i++) {
+            //     self.drawOutline(i);
+            //     self.drawShipName(i);
+            // }
 
-        }
-        if (self.game.status == "setup" && self.placedShips.length < 5) {
-            self.loadShips();
-
-            $('#shipDisplay').show();
         } else {
-            $('#shipDisplay').hide();
-        }
+			self.loadShips();
+		}
+        // if (self.game.status == "setup" && self.placedShips.length < 5) {
+        //     self.loadShips();
 
-        if (self.game.shouldPoll()) {
+        //     $('#shipDisplay').show();
+        // } else {
+        //     $('#shipDisplay').hide();
+        // }
+		//TODO change to sockets
+        if (self.shouldPoll()) {
             console.log("polling")
-            poller = setTimeout(function () { self.game.loadMoreInfo(self.game.id) }, 5000);
+            //poller = setTimeout(function () { self.game.loadMoreInfo(self.game.id) }, 5000);
         }
     }
 
+	self.loadShips = function () {
+        self.ships = [];
+        self.placedShips = [];
+        $.ajax({
+            url: url + "/ships" + token,
+            success: function (result) {
+                for (i = 0; i < result.length; i++) {
+                    self.ships.push(new Ship(result[i]._id, result[i].name, result[i].length, true))
+
+                }
+				ctrl.draw();
+            }
+        });
+    }
+
+    self.addShip = function (ship, x, y) {
+        if (self.placedShips.indexOf(ship) != -1) {
+            var index = self.placedShips.indexOf(ship);
+            ctrl.ChangeFields(self.placedShips[index], false);
+            self.placedShips[index].x = x;
+            self.placedShips[index].y = y;
+            ctrl.ChangeFields(self.placedShips[index], true);
+        } else {
+            var index = self.ships.indexOf(ship);
+            self.ships[index].x = x;
+            self.ships[index].y = y;
+            self.placedShips.push(self.ships[index]);
+            ctrl.ChangeFields(self.ships[index], true);
+        }
+    }
 
 }

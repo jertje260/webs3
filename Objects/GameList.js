@@ -21,7 +21,7 @@ function GameList(ctrl) {
 			self.loadingGames = true
 			self.games = [];
 			$.ajax({
-				url: url + "/users/me/games" + token,
+				url: ctrl.app.config.url + "/users/me/games" + ctrl.app.config.token,
 				success: function (result) {
 					for (i = 0; i < result.length; i++) {
 						self.games.push(new Game(result[i]._id, result[i].status, result[i].enemyId, result[i].enemyName));
@@ -32,11 +32,20 @@ function GameList(ctrl) {
 			});
 		}
 	}
+
+	self.hasGameWaiting = function () {
+		for (var i = 0; i < self.games.length; i++){
+			if (self.games[i].status == "queue") {
+				return true;
+			}
+		}
+		return false;
+}
 	self.newGame = function (AI) {
 		if (AI) {
 			//request new ai game
 			$.ajax({
-				url: url + "/games/AI" + token,
+				url: ctrl.app.config.url + "/games/AI" + ctrl.app.config.token,
 				success: function (result) {
 					self.getGames();
 				}
@@ -44,7 +53,7 @@ function GameList(ctrl) {
 		} else {
 			//request normal game.
 			$.ajax({
-				url: url + "/games" + token,
+				url: ctrl.app.config.url + "/games" + ctrl.app.config.token,
 				success: function (result) {
 					self.getGames();
 				}
@@ -54,7 +63,7 @@ function GameList(ctrl) {
 
 	self.deleteGames = function () {
 		$.ajax({
-			url: url + "/users/me/games" + token,
+			url: ctrl.app.config.url + "/users/me/games" + ctrl.app.config.token,
 			method: "DELETE",
 			success: function (result) {
 				self.getGames();

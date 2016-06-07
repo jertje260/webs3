@@ -21,7 +21,7 @@ function Game(id, status, eID, eName, ctrl) {
 	self.loadMoreInfo = function (id) {
 		self.id = id;
 		var ajax = {};
-		ajax.url = url + "/games/" + self.id + token;
+		ajax.url = ctrl.app.config.url + "/games/" + self.id + ctrl.app.config.token;
 		ajax.success =
 			function (result) {
 				console.log(result);
@@ -94,7 +94,7 @@ function Game(id, status, eID, eName, ctrl) {
 
 	self.loadObjects = function (myboard, enemyboard) {
 
-        console.log(myboard); // contains shots from enemy at me
+        //console.log(myboard); // contains shots from enemy at me
         //console.log(enemyboard); // contains my shots
         //console.log(self.game);
         if (self.status == "setup" && myboard != undefined && myboard.ships.length == 5) {
@@ -105,7 +105,7 @@ function Game(id, status, eID, eName, ctrl) {
             if (myboard.ships.length > 0) {
                 self.ships = [];
                 self.placedShips = [];
-
+				
 				for (var i = 0; i < myboard.ships.length; i++) {
 					var s = new Ship(myboard.ships[i]._id, myboard.ships[i].name, myboard.ships[i].length, !myboard.ships[i].isVertical);
 					s.x = myboard.ships[i].startCell.x.toUpperCase();
@@ -115,6 +115,7 @@ function Game(id, status, eID, eName, ctrl) {
 					self.placedShips.push(s);
 
 				}
+				self.shipsPlaced = true;
 			}
 
             //console.log(self.ships);
@@ -153,7 +154,7 @@ function Game(id, status, eID, eName, ctrl) {
         self.ships = [];
         self.placedShips = [];
         $.ajax({
-            url: url + "/ships" + token,
+            url: ctrl.app.config.url + "/ships" + ctrl.app.config.token,
             success: function (result) {
                 for (i = 0; i < result.length; i++) {
                     self.ships.push(new Ship(result[i]._id, result[i].name, result[i].length, true))
@@ -197,7 +198,7 @@ self.sendShips = function () {
             //console.log(data);
             var json = JSON.parse(data);
             $.ajax({
-                url: url + "/games/" + self.id + "/gameboards" + token,
+                url: ctrl.app.config.url + "/games/" + self.id + "/gameboards" + ctrl.app.config.token,
                 data: json,
                 method: "POST",
                 success: function (result) {

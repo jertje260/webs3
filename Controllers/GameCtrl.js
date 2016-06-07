@@ -191,6 +191,7 @@ function GameCtrl(app, id) {
                         self.game.shots.push(json);
                         self.visualizeShot(json);
                         //alert("You shot at " + e.x + (e.y));
+                        self.game.loadMoreInfo(self.game.id);
                         app.createPopup("Shot", "You shot at " + e.x + (e.y) + " and it " + (result == "BOOM" ? "hit." : "missed."));
                     } else if (result == "FAIL") { // shouldn't happen.
                         app.createPopup("Shot", "You already shot at " + e.x + (e.y) + ". Sadly this message comes from the server, you have to wait untill your next turn.");
@@ -294,6 +295,7 @@ function GameCtrl(app, id) {
                 self.dropConfirmed = false;
                 //console.log(event.target);
                 event.dataTransfer.setData("dragged-id", event.target.id);
+                event.dataTransfer.setData("")
                 $(event.target.id).removeClass("placed");
                 self.removeOutline(event.target.id.substring(1));
 

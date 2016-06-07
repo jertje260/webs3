@@ -1,10 +1,10 @@
-function Profile() {
+function Profile(ctrl) {
 	var self = this;
 	self.id = null;
 	self.naam = null;
 	self.loadProfile = function (show) {
 		$.ajax({
-			url: url + "/users/me/info" + token,
+			url: ctrl.app.config.url + "/users/me/info" + ctrl.app.config.token,
 			success: function (result) {
 				self.id = result._id;
 				self.naam = result.name;

@@ -167,7 +167,8 @@ var loadContent = function (url) {
 
 function ZeeslagApp() {
     var self = this;
-    self.socket = new MySocket(self);
+    self.config;
+    self.socket;
     self.pagelist = {};
     self.pagelist["/webs3/"] = "Templates\/home.html";
     self.pagelist["/webs3/?page=profile"] = "Templates\/profile.html";
@@ -175,9 +176,26 @@ function ZeeslagApp() {
     self.pagelist["/webs3/?page=todo"] = "Templates\/todo.html";
     self.pagelist["/webs3/?page=game&id="] = "Templates\/game.html";
 
+    self.init = function () {
+        self.loadConfig(function () {
+            self.socket = new MySocket(self);
+            self.bindEvents();
+            self.loadFromUrl();
+            
+        });
+    }
+    
+
     self.setCtrl = function (controller) {
         self.ctrl = controller;
         self.ctrl.load();
+    }
+    self.loadConfig = function (callback) {
+        $.get('config.json', function (result) {
+            console.log(result);
+            self.config = result;
+            callback();
+        });
     }
 
     self.loadPage = function (url, callback) {
@@ -240,9 +258,8 @@ function ZeeslagApp() {
         $('#myModal').modal('show');
 
     }
+    self.init();
 
-    self.bindEvents();
-    self.loadFromUrl();
-}
+};
 
 var app = new ZeeslagApp();

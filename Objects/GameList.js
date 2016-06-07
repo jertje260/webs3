@@ -1,47 +1,51 @@
-function GameList(show) {
+function GameList(ctrl) {
 	
 
 	//events
-	$('#allGames').on('click', 'tr', function (event) {
-		href = $(this).attr("href");
-        loadContent(href);
+	// $('#allGames').on('click', 'tr', function (event) {
+	// 	href = $(this).attr("href");
+    //     loadContent(href);
 
-        // HISTORY.PUSHSTATE
-        history.pushState('', 'New URL: ' + href, href);
-        event.preventDefault();
+    //     // HISTORY.PUSHSTATE
+    //     history.pushState('', 'New URL: ' + href, href);
+    //     event.preventDefault();
 
 
-	});
+	// });
 
 	var self = this;
 	self.games = [];
 	self.loadingGames = false;
-	self.getGames = function (show) {
-		if(show == undefined){
-			show = true;
-		}
+	self.getGames = function () {
 		if (!self.loadingGames) {
 			self.loadingGames = true
 			self.games = [];
 			$.ajax({
-				url: url + "/users/me/games" + token,
+				url: ctrl.app.config.url + "/users/me/games" + ctrl.app.config.token,
 				success: function (result) {
 					for (i = 0; i < result.length; i++) {
 						self.games.push(new Game(result[i]._id, result[i].status, result[i].enemyId, result[i].enemyName));
 					}
-					if (show) {
-						self.viewGames();
-					}
 					self.loadingGames = false;
+					ctrl.draw();
 				}
 			});
 		}
 	}
+
+	self.hasGameWaiting = function () {
+		for (var i = 0; i < self.games.length; i++){
+			if (self.games[i].status == "queue") {
+				return true;
+			}
+		}
+		return false;
+}
 	self.newGame = function (AI) {
 		if (AI) {
 			//request new ai game
 			$.ajax({
-				url: url + "/games/AI" + token,
+				url: ctrl.app.config.url + "/games/AI" + ctrl.app.config.token,
 				success: function (result) {
 					self.getGames();
 				}
@@ -49,7 +53,7 @@ function GameList(show) {
 		} else {
 			//request normal game.
 			$.ajax({
-				url: url + "/games" + token,
+				url: ctrl.app.config.url + "/games" + ctrl.app.config.token,
 				success: function (result) {
 					self.getGames();
 				}
@@ -59,7 +63,7 @@ function GameList(show) {
 
 	self.deleteGames = function () {
 		$.ajax({
-			url: url + "/users/me/games" + token,
+			url: ctrl.app.config.url + "/users/me/games" + ctrl.app.config.token,
 			method: "DELETE",
 			success: function (result) {
 				self.getGames();
@@ -68,13 +72,6 @@ function GameList(show) {
 	}
 
 
-	self.viewGames = function () {
-		$('#allGames tbody').empty();
-		//$('#allGames tbody').append('<th>Game ID</th><th>Status</th><th>Enemy name</th>');
-		for (i = 0; i < self.games.length; i++) {
-			$('#allGames tbody').append('<tr href="/webs3/?page=game&id=' + self.games[i].id + '" id="' + self.games[i].id + '"><td>' + self.games[i].id + '</td><td>' + self.games[i].status + '</td><td>' + (self.games[i].enemyName == undefined?"":self.games[i].enemyName) + '</td></tr>');
-		}
-	}
 
 	self.findGame = function (id) {
 		for (i = 0; i < self.games.length; i++) {
@@ -85,20 +82,15 @@ function GameList(show) {
 		return null;
 	}
 
-	//code to execute on load
-	if(show == undefined){
-			self.getGames(true);
-	} else {
-		self.getGames(false);
-	}
+	
 
-	$('#newGame').on('click', function () {
-		self.newGame(false);
-	});
-	$('#newAIGame').on('click', function () {
-		self.newGame(true);
-	});
-	$('#deleteGames').on('click', function () {
-		self.deleteGames();
-	});
+	// $('#newGame').on('click', function () {
+	// 	self.newGame(false);
+	// });
+	// $('#newAIGame').on('click', function () {
+	// 	self.newGame(true);
+	// });
+	// $('#deleteGames').on('click', function () {
+	// 	self.deleteGames();
+	// });
 }

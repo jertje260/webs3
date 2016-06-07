@@ -1,4 +1,4 @@
-var profile = null;
+/*var profile = null;
 var gamelist = null;
 var currentGame = null;
 var poller;
@@ -163,3 +163,103 @@ var loadContent = function (url) {
     }
 
 }
+*/
+
+function ZeeslagApp() {
+    var self = this;
+    self.config;
+    self.socket;
+    self.pagelist = {};
+    self.pagelist["/webs3/"] = "Templates\/home.html";
+    self.pagelist["/webs3/?page=profile"] = "Templates\/profile.html";
+    self.pagelist["/webs3/?page=games"] = "Templates\/gamelist.html";
+    self.pagelist["/webs3/?page=todo"] = "Templates\/todo.html";
+    self.pagelist["/webs3/?page=game&id="] = "Templates\/game.html";
+
+    self.init = function () {
+        self.loadConfig(function () {
+            self.socket = new MySocket(self);
+            self.bindEvents();
+            self.loadFromUrl();
+            
+        });
+    }
+    
+
+    self.setCtrl = function (controller) {
+        self.ctrl = controller;
+        self.ctrl.load();
+    }
+    self.loadConfig = function (callback) {
+        $.get('config.json', function (result) {
+            console.log(result);
+            self.config = result;
+            callback();
+        });
+    }
+
+    self.loadPage = function (url, callback) {
+        $.get(url, function (html) {
+            
+            $('#view').empty().append(html);
+            //console.log("loading view");
+            if (callback != undefined) {
+                callback();
+            }
+        });
+    }
+
+    self.loadFromUrl = function () {
+        $('.active').removeClass('active');
+        if (location.search == "?page=games") {
+            $('#mygames').addClass('active');
+            self.setCtrl(new GamelistCtrl(self));
+        } else if (location.search.startsWith("?page=game&id=")) {
+            $('#mygames').addClass('active');
+            var id = location.search.split('id=')[1];
+            self.setCtrl(new GameCtrl(self, id));
+
+        } else {
+            self.setCtrl(new BaseCtrl(self));
+        }
+    }
+
+    self.bindEvents = function () {
+        $('nav a').click(function (e) {
+            var href = e.target.href.replace('http://localhost', '');
+            // HISTORY.PUSHSTATE
+            history.pushState({ "URL": href, "toLoad": href, }, 'New URL: ' + href, href);
+            self.loadFromUrl();
+            e.preventDefault();
+
+
+        });
+
+        // THIS EVENT MAKES SURE THAT THE BACK/FORWARD BUTTONS WORK AS WELL
+        window.onpopstate = function (event) {
+            //console.log(event);
+            console.log("pathname: " + location.pathname + location.search);
+            self.loadFromUrl(self.pagelist[location.pathname + location.search]);
+        };
+
+    }
+
+    self.createPopup = function (title, message, callback) {
+        //TODO do this later
+        $('#closebutton').unbind();
+        $('#myModalLabel')[0].innerHTML = title;
+        $('.modal-body')[0].innerHTML = message;
+        if (callback != undefined) {
+            $('#closebutton').on('click', function () {
+                console.log("click fired");
+                callback();
+            });
+        }
+        $('#myModal').modal('show');
+
+    }
+    self.init();
+
+};
+
+var app = new ZeeslagApp();

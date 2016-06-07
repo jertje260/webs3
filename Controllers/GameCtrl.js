@@ -264,6 +264,7 @@ function GameCtrl(app, id) {
                 }
                 //console.log(shipnumber);
                 // test if ship can fit here
+                self.putShipOnField(shipnumber, false);
                 if (self.doesShipFit(shipnumber, id[0], id[1])) {
 
                     self.dropConfirmed = true;
@@ -279,6 +280,7 @@ function GameCtrl(app, id) {
                     // setting outline for ship
                     self.drawOutline(shipnumber);
                 } else {
+                    self.putShipOnField(shipnumber, true);
                     app.createPopup("Ship placement", "This ship cannot be placed here, please try again.");
                     //alert("You cant place this ship here!");
                 }
@@ -295,7 +297,7 @@ function GameCtrl(app, id) {
                 self.dropConfirmed = false;
                 //console.log(event.target);
                 event.dataTransfer.setData("dragged-id", event.target.id);
-                event.dataTransfer.setData("")
+                //event.dataTransfer.setData("")
                 $(event.target.id).removeClass("placed");
                 self.removeOutline(event.target.id.substring(1));
 
@@ -328,9 +330,26 @@ function GameCtrl(app, id) {
         }
     }
 
+    self.putShipOnField = function (shipid, placed) {
+        var ship = self.game.ships[shipid];
+        if (ship.x) {
+            var index = self.letters.indexOf(ship.x);
+            for (var i = 0; i < ship.length; i++){
+                if (ship.isHorizontal) {
+                    self.game.fields[self.letters[index + i]][parseInt(ship.y) - 1].hasShip = placed;
+                } else {
+                    self.game.fields[ship.x][parseInt(ship.y) + i - 1].hasShip = placed;
+                }
+            }
+        }
+    }
+
+
     self.doesShipFit = function (shipnumber, x, y, flipping) {
         var ship = self.game.ships[shipnumber];
+        
         var hor = ship.isHorizontal;
+        
         if (x == null) {
             x = ship.x;
         }

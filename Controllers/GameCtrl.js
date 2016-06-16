@@ -34,6 +34,9 @@ function GameCtrl(app, id) {
         self.shot.setAttribute('src', 'Resources/battleshot.mp3');
         self.miss.setAttribute('src', 'Resources/splash.mp3');
         self.hit.setAttribute('src', 'Resources/explosion.mp3');
+        self.shot.volume = 0.6;
+        self.hit.volume = 0.15;
+        self.miss.volume = 1;
 
     }
 
@@ -176,13 +179,13 @@ function GameCtrl(app, id) {
             self.playSound(self.shot);
             //console.log(json);
             $.ajax({
-                url: url + "/games/" + self.game.id + "/shots" + token,
+                url: app.config.url + "/games/" + self.game.id + "/shots" + app.config.token,
                 data: json,
                 method: "POST",
                 success: function (result) {
-                    if (result == "BOOM" || result == "SPLASH") {
+                    if (result == "BOOM" || result == "SPLASH" || result == "WINNER") {
                         e.click();
-                        if (result == "BOOM") {
+                        if (result == "BOOM" || result == "WINNER") {
                             json["isHit"] = true;
                             self.playSound(self.hit);
                         } else {
@@ -191,14 +194,15 @@ function GameCtrl(app, id) {
                         self.game.shots.push(json);
                         self.visualizeShot(json);
                         //alert("You shot at " + e.x + (e.y));
-                        self.game.loadMoreInfo(self.game.id);
-                        app.createPopup("Shot", "You shot at " + e.x + (e.y) + " and it " + (result == "BOOM" ? "hit." : "missed."));
+                        //self.game.loadMoreInfo(self.game.id);
+                        if (result != "WINNER") {
+                            app.createPopup("Shot", "You shot at " + e.x + (e.y) + " and it " + (result == "BOOM" ? "hit." : "missed."));
+                        } else {
+                            app.createPopup("Game Over", "You shot at " + e.x + (e.y) + " and it hit. You won the game! Congratulations!");
+                        }
                     } else if (result == "FAIL") { // shouldn't happen.
                         app.createPopup("Shot", "You already shot at " + e.x + (e.y) + ". Sadly this message comes from the server, you have to wait untill your next turn.");
                         //alert("You already shot at " + e.x + (e.y) + ". Try another field");
-                    } else if (result == "WINNER") {
-                        app.createPopup("Game Over", "You won the game! Congratulations!");
-                        //alert("You won the game!");
                     }
                     //self.game.loadMoreInfo(self.game.id);
                 }
@@ -334,7 +338,7 @@ function GameCtrl(app, id) {
         var ship = self.game.ships[shipid];
         if (ship.x) {
             var index = self.letters.indexOf(ship.x);
-            for (var i = 0; i < ship.length; i++){
+            for (var i = 0; i < ship.length; i++) {
                 if (ship.isHorizontal) {
                     self.game.fields[self.letters[index + i]][parseInt(ship.y) - 1].hasShip = placed;
                 } else {
@@ -347,9 +351,9 @@ function GameCtrl(app, id) {
 
     self.doesShipFit = function (shipnumber, x, y, flipping) {
         var ship = self.game.ships[shipnumber];
-        
+
         var hor = ship.isHorizontal;
-        
+
         if (x == null) {
             x = ship.x;
         }

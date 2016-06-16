@@ -18,11 +18,11 @@ function Profile(ctrl) {
 
 	self.draw = function () {
 		if (self.id != null) {
-			console.log("drawing profile");
+			//console.log("drawing profile");
 			$('#profileid').html(self.id);
 			$('#profilename').html(self.naam);
 		} else {
-			console.log("loading profile");
+			//console.log("loading profile");
 			self.loadProfile(true);
 		}	
 	}

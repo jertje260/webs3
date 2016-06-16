@@ -103,8 +103,6 @@ function GameCtrl(app, id) {
     }
 
     self.shotUpdate = function (shot) {
-        console.log(shot);
-        console.log('shot at gamectrl');
         if (shot.gameId == self.game.id) {
             console.log(shot);
         }

@@ -192,7 +192,7 @@ function ZeeslagApp() {
     }
     self.loadConfig = function (callback) {
         $.get('config.json', function (result) {
-            console.log(result);
+            //console.log(result);
             self.config = result;
             callback();
         });
@@ -251,7 +251,7 @@ function ZeeslagApp() {
         $('.modal-body')[0].innerHTML = message;
         if (callback != undefined) {
             $('#closebutton').on('click', function () {
-                console.log("click fired");
+                //console.log("click fired");
                 callback();
             });
         }

@@ -58,6 +58,7 @@ function GameCtrl(app, id) {
 
     self.draw = function () {
         app.loadPage(app.pagelist["/webs3/?page=game&id="], function () {
+            document.title = "BattleShip - Game " + self.game.id;
             if (self.game.status == "setup" && !self.game.shipsPlaced) {
                 self.drawShipsTable();
                 self.dragndrop();
@@ -138,10 +139,10 @@ function GameCtrl(app, id) {
     }
 
     self.shoot = function (event) {
-        if (self.game.yourTurn == true && self.game.status == "started") {
+        if (self.game.yourTurn == true && self.game.status == "started" && !self.game.isDone) {
             self.shootAt(event.currentTarget.id);
         } else {
-            if (self.game.status != "started") {
+            if (self.game.status == "done") {
                 if (self.game.isDone) {
                     var text;
                     if (self.game.youWon) {
@@ -151,11 +152,13 @@ function GameCtrl(app, id) {
                     }
                     //alert("The game is finished. " + text);
                     app.createPopup("Game Over", "The game is over." + text);
-                } else {
-                    app.createPopup("Game Status", "The game hasn't started yet, please wait untill the other player has placed their ships.");
-                    //alert("The game hasn't started yet");
                 }
-            } else {
+            }
+            else if (self.game.status == "queue") {
+                app.createPopup("Game Status", "The game hasn't started yet, please wait untill the other player has placed their ships.");
+                //alert("The game hasn't started yet");
+            }
+            else {
                 app.createPopup("Turn", "It's not your turn, please wait untill the other player has done his turn.");
                 //alert("It's not your turn!");
             }

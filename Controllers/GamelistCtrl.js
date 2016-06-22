@@ -6,6 +6,7 @@ function GamelistCtrl(app) {
 
     self.load = function () {
         app.loadPage(app.pagelist["/webs3/" + location.search], function () {
+            document.title = "BattleShip - GameList";
             self.gamelist = new GameList(self);
             self.gamelist.getGames();
             self.bindEvents();
